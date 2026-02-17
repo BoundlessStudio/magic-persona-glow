@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Ripple } from "@/components/ui/ripple";
 import { Persona, type PersonaState } from "@/components/ai-elements/persona";
 import { UploadDropzone } from "@/components/ui/upload-dropzone";
@@ -16,15 +16,35 @@ const stateIcons: { state: PersonaState; icon: typeof Circle }[] = [
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
+  const [showUpload, setShowUpload] = useState(false);
+  const [uploadExiting, setUploadExiting] = useState(false);
+  const exitTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (currentState === "upload") {
+      setUploadExiting(false);
+      setShowUpload(true);
+    } else if (showUpload) {
+      setUploadExiting(true);
+      clearTimeout(exitTimer.current);
+      exitTimer.current = setTimeout(() => {
+        setShowUpload(false);
+        setUploadExiting(false);
+      }, 200);
+    }
+    return () => clearTimeout(exitTimer.current);
+  }, [currentState]);
+
+  const isUploadVisible = showUpload || currentState === "upload";
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background overflow-hidden">
       <Ripple className="z-0" />
-      <div className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity ${currentState === "upload" ? "opacity-30" : ""}`}>
+      <div className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isUploadVisible && !uploadExiting ? "opacity-30" : ""}`}>
         <Persona state={currentState === "upload" ? "idle" : currentState} variant="halo" className="size-64 pointer-events-auto" />
       </div>
-      {currentState === "upload" && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none animate-scale-in">
+      {isUploadVisible && (
+        <div className={`absolute inset-0 z-30 flex items-center justify-center pointer-events-none ${uploadExiting ? "animate-scale-out" : "animate-scale-in"}`}>
           <UploadDropzone
             description={{ maxFiles: 4, maxFileSize: "2MB", fileTypes: "JPEG, PNG, GIF" }}
             onDrop={(files) => {
