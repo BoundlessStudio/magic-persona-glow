@@ -17,7 +17,7 @@ const Index = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background overflow-hidden">
       <Ripple className="z-0" />
-      <div className="relative z-10 flex flex-col items-center gap-8 pt-10">
+      <div className="relative z-10 flex flex-col items-center gap-8 pt-14">
         <Persona state={currentState} variant="halo" className="size-64" />
         <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
           {stateIcons.map(({ state, icon: Icon }) => (
