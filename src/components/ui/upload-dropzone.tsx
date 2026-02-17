@@ -27,7 +27,7 @@ export const UploadDropzone = forwardRef<HTMLDivElement, UploadDropzoneProps>(
         {...getRootProps()}
         ref={ref}
         className={cn(
-          "flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed p-10 transition-colors cursor-pointer",
+          "flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-solid p-10 transition-colors cursor-pointer",
           isDragActive
             ? "border-primary bg-primary/5"
             : "border-muted-foreground/25 hover:border-muted-foreground/50",
