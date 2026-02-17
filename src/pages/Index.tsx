@@ -13,16 +13,12 @@ const Index = () => {
         className="absolute inset-0 z-0"
         squareSize={4}
         gridGap={6}
-        color="rgb(99, 102, 241)"
+        color="white"
         maxOpacity={0.15}
         flickerChance={0.1}
       />
       <div className="relative z-10 flex flex-col items-center gap-8">
-        <Persona
-          state={currentState}
-          variant="command"
-          className="size-64"
-        />
+        <Persona state={currentState} variant="command" className="size-64" />
         <div className="flex gap-2">
           {states.map((s) => (
             <button
