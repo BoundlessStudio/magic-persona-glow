@@ -15,7 +15,7 @@ const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-background overflow-hidden">
+    <div className="p-2 relative flex min-h-screen items-center justify-center bg-background overflow-hidden">
       <Ripple className="z-0" />
       <div className="relative z-10 flex flex-col items-center gap-8">
         <Persona state={currentState} variant="halo" className="size-64" />
