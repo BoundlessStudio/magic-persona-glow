@@ -24,13 +24,13 @@ const Index = () => {
         <Persona state={currentState === "upload" ? "idle" : currentState} variant="halo" className="size-64 pointer-events-auto" />
       </div>
       {currentState === "upload" && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center animate-in fade-in duration-300">
+        <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none animate-in fade-in duration-300">
           <UploadDropzone
             description={{ maxFiles: 4, maxFileSize: "2MB", fileTypes: "JPEG, PNG, GIF" }}
             onDrop={(files) => {
               toast({ title: "Files selected", description: `${files.length} file(s) — no server to upload to.` });
             }}
-            className="w-80 bg-background/80 backdrop-blur-sm"
+            className="w-80 bg-background/80 backdrop-blur-sm pointer-events-auto"
           />
         </div>
       )}
