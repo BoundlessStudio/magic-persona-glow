@@ -17,9 +17,10 @@ const Index = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background overflow-hidden">
       <Ripple className="z-0" />
-      <div className="relative z-10 flex flex-col items-center gap-8 pt-20">
-        <Persona state={currentState} variant="halo" className="size-64" />
-        <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
+      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+        <Persona state={currentState} variant="halo" className="size-64 pointer-events-auto" />
+      </div>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
           {stateIcons.map(({ state, icon: Icon }) => (
             <button
               key={state}
@@ -33,7 +34,6 @@ const Index = () => {
               <Icon size={20} />
             </button>
           ))}
-        </div>
       </div>
     </div>
   );
