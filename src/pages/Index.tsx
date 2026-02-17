@@ -10,8 +10,8 @@ const stateIcons: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "listening", icon: Mic },
   { state: "thinking", icon: Brain },
   { state: "speaking", icon: Megaphone },
-  { state: "asleep", icon: Moon },
   { state: "upload", icon: Upload },
+  { state: "asleep", icon: Moon },
 ];
 
 const Index = () => {
