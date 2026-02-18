@@ -37,14 +37,14 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
       <div
         ref={ref}
         className={cn(
-          "flex flex-col gap-3 rounded-lg border border-border bg-card p-3 w-[260px]",
+          "flex flex-col gap-3 rounded-lg border border-border bg-card p-4 w-[320px]",
           className
         )}
       >
         <HexAlphaColorPicker
           color={color}
           onChange={handleChange}
-          style={{ width: "100%", height: "160px" }}
+          style={{ width: "100%", height: "200px" }}
         />
 
         <div className="flex items-center gap-2">

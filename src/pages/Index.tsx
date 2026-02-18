@@ -827,10 +827,10 @@ if __name__ == "__main__":
           {showOverlay === "kb-qr-code" && (
             <div className="pointer-events-auto flex flex-col items-center gap-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border p-6">
               <QRCode
-                data="https://www.kibo-ui.com"
+                data="https://www.example.com"
                 className="size-48 rounded-lg overflow-hidden"
               />
-              <p className="text-sm text-muted-foreground">kibo-ui.com</p>
+              <p className="text-sm text-muted-foreground">www.example.com</p>
             </div>
           )}
         </div>
