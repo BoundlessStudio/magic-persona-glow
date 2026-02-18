@@ -75,6 +75,10 @@ import {
   FileTreeFile,
 } from "@/components/ai-elements/file-tree";
 import {
+  CodeBlock,
+  CodeBlockCopyButton,
+} from "@/components/ai-elements/code-block";
+import {
   Sandbox,
   SandboxHeader,
   SandboxContent,
@@ -525,7 +529,9 @@ const Index = () => {
                     </SandboxTabsList>
                   </SandboxTabsBar>
                   <SandboxTabContent value="code">
-                    <pre className="p-4 text-xs font-mono whitespace-pre-wrap leading-relaxed">{`import math
+                    <CodeBlock
+                      className="border-0 rounded-none"
+                      code={`import math
 
 def calculate_primes(limit):
     sieve = [True] * (limit + 1)
@@ -539,11 +545,22 @@ def calculate_primes(limit):
 if __name__ == "__main__":
     primes = calculate_primes(50)
     print(f"Found {len(primes)} prime numbers up to 50:")
-    print(primes)`}</pre>
+    print(primes)`}
+                      language="python"
+                    >
+                      <CodeBlockCopyButton
+                        className="absolute top-2 right-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                        size="sm"
+                      />
+                    </CodeBlock>
                   </SandboxTabContent>
                   <SandboxTabContent value="output">
-                    <pre className="p-4 text-xs font-mono whitespace-pre-wrap">{`Found 15 prime numbers up to 50:
-[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]`}</pre>
+                    <CodeBlock
+                      className="border-0 rounded-none"
+                      code={`Found 15 prime numbers up to 50:
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]`}
+                      language="text"
+                    />
                   </SandboxTabContent>
                 </SandboxTabs>
               </SandboxContent>
@@ -592,7 +609,7 @@ if __name__ == "__main__":
           {showOverlay === "test-results" && (
             <TestResults
               summary={{ passed: 12, failed: 2, skipped: 1, total: 15, duration: "3.25s" }}
-              className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+              className="w-[960px] h-[640px] overflow-auto bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <TestResultsHeader>
                 <TestResultsSummary />
