@@ -33,14 +33,9 @@ interface CanvasProps {
 
 /* ── Helpers ── */
 const NODE_WIDTH = 200;
-const NODE_HEIGHT = 100;
+const NODE_HEIGHT = 120;
 
-function buildPath(
-  sx: number,
-  sy: number,
-  tx: number,
-  ty: number
-): string {
+function buildPath(sx: number, sy: number, tx: number, ty: number): string {
   const mx = (sx + tx) / 2;
   return `M ${sx} ${sy} C ${mx} ${sy}, ${mx} ${ty}, ${tx} ${ty}`;
 }
@@ -56,12 +51,8 @@ export const Canvas: FC<CanvasProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [nodeEls, setNodeEls] = useState<Map<string, DOMRect>>(new Map());
 
-  /* Compute the bounding box so we can size the SVG and position nodes */
   const layout = useMemo(() => {
-    let minX = Infinity,
-      minY = Infinity,
-      maxX = -Infinity,
-      maxY = -Infinity;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     for (const n of nodes) {
       if (n.position.x < minX) minX = n.position.x;
       if (n.position.y < minY) minY = n.position.y;
@@ -77,20 +68,16 @@ export const Canvas: FC<CanvasProps> = ({
     };
   }, [nodes]);
 
-  /* Measure rendered node elements for precise edge connections */
   useEffect(() => {
     if (!containerRef.current) return;
     const map = new Map<string, DOMRect>();
     for (const n of nodes) {
-      const el = containerRef.current.querySelector(
-        `[data-node-id="${n.id}"]`
-      );
+      const el = containerRef.current.querySelector(`[data-node-id="${n.id}"]`);
       if (el) map.set(n.id, el.getBoundingClientRect());
     }
     setNodeEls(map);
   }, [nodes]);
 
-  /* Edge paths — use measured rects when available, fallback to layout */
   const edgePaths = useMemo(() => {
     const containerRect = containerRef.current?.getBoundingClientRect();
     return edges.map((edge) => {
@@ -99,7 +86,6 @@ export const Canvas: FC<CanvasProps> = ({
       if (!sNode || !tNode) return { ...edge, d: "" };
 
       let sx: number, sy: number, tx: number, ty: number;
-
       const sRect = nodeEls.get(edge.source);
       const tRect = nodeEls.get(edge.target);
 
@@ -123,38 +109,46 @@ export const Canvas: FC<CanvasProps> = ({
     <div
       ref={containerRef}
       className={cn("relative overflow-auto", className)}
-      style={{ width: layout.width, height: layout.height }}
+      style={{
+        backgroundImage:
+          "radial-gradient(circle, hsl(var(--muted-foreground) / 0.15) 1px, transparent 1px)",
+        backgroundSize: "20px 20px",
+      }}
     >
-      {/* SVG layer for edges */}
-      <svg
-        className="absolute inset-0 pointer-events-none"
-        width={layout.width}
-        height={layout.height}
+      {/* Inner content sized to fit all nodes */}
+      <div
+        className="relative"
+        style={{ minWidth: layout.width, minHeight: layout.height }}
       >
-        {edgePaths.map((ep) => {
-          const Renderer = edgeTypes[ep.type];
-          return Renderer ? <Renderer key={ep.id} d={ep.d} /> : null;
-        })}
-      </svg>
+        <svg
+          className="absolute inset-0 pointer-events-none"
+          width={layout.width}
+          height={layout.height}
+        >
+          {edgePaths.map((ep) => {
+            const Renderer = edgeTypes[ep.type];
+            return Renderer ? <Renderer key={ep.id} d={ep.d} /> : null;
+          })}
+        </svg>
 
-      {/* Node layer */}
-      {nodes.map((node) => {
-        const Renderer = nodeTypes[node.type];
-        if (!Renderer) return null;
-        return (
-          <div
-            key={node.id}
-            data-node-id={node.id}
-            className="absolute"
-            style={{
-              left: node.position.x + layout.offsetX,
-              top: node.position.y + layout.offsetY,
-            }}
-          >
-            <Renderer data={node.data} />
-          </div>
-        );
-      })}
+        {nodes.map((node) => {
+          const Renderer = nodeTypes[node.type];
+          if (!Renderer) return null;
+          return (
+            <div
+              key={node.id}
+              data-node-id={node.id}
+              className="absolute"
+              style={{
+                left: node.position.x + layout.offsetX,
+                top: node.position.y + layout.offsetY,
+              }}
+            >
+              <Renderer data={node.data} />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

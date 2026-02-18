@@ -96,6 +96,7 @@ import {
   NodeDescription,
   NodeFooter,
   NodeHeader,
+  NodeHandle,
   NodeTitle,
 } from "@/components/ai-elements/node";
 import { nanoid } from "nanoid";
@@ -664,12 +665,12 @@ if __name__ == "__main__":
               process2: nanoid(),
             };
             const wfNodes = [
-              { id: nodeIds.start, position: { x: 0, y: 0 }, type: "workflow", data: { label: "Start", description: "Initialize workflow", handles: { source: true, target: false } } },
-              { id: nodeIds.process1, position: { x: 500, y: 0 }, type: "workflow", data: { label: "Process Data", description: "Transform input", handles: { source: true, target: true } } },
-              { id: nodeIds.decision, position: { x: 1000, y: 0 }, type: "workflow", data: { label: "Decision Point", description: "Route based on conditions", handles: { source: true, target: true } } },
-              { id: nodeIds.output1, position: { x: 1500, y: -100 }, type: "workflow", data: { label: "Success Path", description: "Handle success case", handles: { source: true, target: true } } },
-              { id: nodeIds.output2, position: { x: 1500, y: 100 }, type: "workflow", data: { label: "Error Path", description: "Handle error case", handles: { source: true, target: true } } },
-              { id: nodeIds.process2, position: { x: 2000, y: 0 }, type: "workflow", data: { label: "Complete", description: "Finalize workflow", handles: { source: false, target: true } } },
+              { id: nodeIds.start, position: { x: 0, y: 160 }, type: "workflow", data: { label: "Start", description: "Initialize workflow", handles: { source: true, target: false } } },
+              { id: nodeIds.process1, position: { x: 240, y: 160 }, type: "workflow", data: { label: "Process Data", description: "Transform input", handles: { source: true, target: true } } },
+              { id: nodeIds.decision, position: { x: 480, y: 160 }, type: "workflow", data: { label: "Decision Point", description: "Route based on conditions", handles: { source: true, target: true } } },
+              { id: nodeIds.output1, position: { x: 720, y: 40 }, type: "workflow", data: { label: "Success Path", description: "Handle success case", handles: { source: true, target: true } } },
+              { id: nodeIds.output2, position: { x: 720, y: 300 }, type: "workflow", data: { label: "Error Path", description: "Handle error case", handles: { source: true, target: true } } },
+              { id: nodeIds.process2, position: { x: 960, y: 160 }, type: "workflow", data: { label: "Complete", description: "Finalize workflow", handles: { source: false, target: true } } },
             ];
             const wfEdges = [
               { id: nanoid(), source: nodeIds.start, target: nodeIds.process1, type: "animated" },
@@ -680,8 +681,10 @@ if __name__ == "__main__":
               { id: nanoid(), source: nodeIds.output2, target: nodeIds.process2, type: "temporary" },
             ];
             const wfNodeTypes = {
-              workflow: ({ data }: { data: { label: string; description: string } }) => (
+              workflow: ({ data }: { data: { label: string; description: string; handles: { source: boolean; target: boolean } } }) => (
                 <Node>
+                  {data.handles.target && <NodeHandle position="left" />}
+                  {data.handles.source && <NodeHandle position="right" />}
                   <NodeHeader>
                     <NodeTitle>{data.label}</NodeTitle>
                     <NodeDescription>{data.description}</NodeDescription>
@@ -705,7 +708,7 @@ if __name__ == "__main__":
                 edges={wfEdges}
                 nodeTypes={wfNodeTypes}
                 edgeTypes={wfEdgeTypes}
-                className="bg-background/80 backdrop-blur-sm rounded-lg border border-border pointer-events-auto"
+                className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm rounded-lg border border-border pointer-events-auto"
               />
             );
           })()}

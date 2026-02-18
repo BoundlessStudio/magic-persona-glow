@@ -3,6 +3,20 @@
 import type { FC, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
+/* ── Handle (diamond connector) ── */
+export const NodeHandle: FC<{
+  position: "left" | "right";
+  className?: string;
+}> = ({ position, className }) => (
+  <div
+    className={cn(
+      "absolute top-1/2 -translate-y-1/2 size-2 rotate-45 border border-muted-foreground/60 bg-card",
+      position === "left" ? "-left-1" : "-right-1",
+      className
+    )}
+  />
+);
+
 /* ── Node ── */
 interface NodeProps {
   className?: string;
@@ -12,7 +26,7 @@ interface NodeProps {
 export const Node: FC<NodeProps> = ({ className, children }) => (
   <div
     className={cn(
-      "rounded-lg border border-border bg-card text-card-foreground shadow-sm min-w-[180px] max-w-[240px]",
+      "relative rounded-lg border border-border bg-card text-card-foreground shadow-sm min-w-[180px] max-w-[240px]",
       className
     )}
   >
