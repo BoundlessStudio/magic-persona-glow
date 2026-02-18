@@ -60,7 +60,7 @@ const Index = () => {
             />
           )}
           {showOverlay === "preview" && (
-            <WebPreview className="w-[480px] h-80 bg-background/80 backdrop-blur-sm pointer-events-auto" />
+            <WebPreview className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto" />
           )}
         </div>
       )}
