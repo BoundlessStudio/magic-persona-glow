@@ -110,18 +110,20 @@ export const WebPreviewUrl: FC = () => {
 /*  Body (iframe / placeholder)                                       */
 /* ------------------------------------------------------------------ */
 
-export const WebPreviewBody: FC<{ src?: string; className?: string }> = ({
-  className,
-}) => (
-  <div
-    className={cn(
-      "relative flex-1 min-h-0 bg-background flex items-center justify-center text-muted-foreground text-sm",
-      className
-    )}
-  >
-    Preview will appear here
-  </div>
-);
+export const WebPreviewBody: FC<{ className?: string }> = ({ className }) => {
+  const { url } = useWebPreview();
+
+  return (
+    <div className={cn("relative flex-1 min-h-0 bg-background", className)}>
+      <iframe
+        src={url}
+        title="Web Preview"
+        className="absolute inset-0 w-full h-full border-0"
+        sandbox="allow-scripts allow-same-origin allow-forms"
+      />
+    </div>
+  );
+};
 
 /* ------------------------------------------------------------------ */
 /*  Console                                                           */
