@@ -903,7 +903,7 @@ if __name__ == "__main__":
           )}
           {/* Chatbot */}
           {showOverlay === "chatbot" && (
-            <div className="pointer-events-auto w-[480px] h-[600px] bg-background/80 backdrop-blur-sm rounded-lg border border-border overflow-hidden">
+            <div className="pointer-events-auto w-[480px] h-[500px] bg-background/80 backdrop-blur-sm rounded-lg border border-border overflow-hidden">
               <ChatbotDemo />
             </div>
           )}
