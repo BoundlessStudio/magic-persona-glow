@@ -138,4 +138,5 @@ All colors MUST be HSL.
 .react-colorful__saturation {
   aspect-ratio: 1 / 1 !important;
   height: auto !important;
+  max-height: 240px !important;
 }
