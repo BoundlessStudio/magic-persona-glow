@@ -75,6 +75,52 @@ import {
   FileTreeFile,
 } from "@/components/ai-elements/file-tree";
 import {
+  Sandbox,
+  SandboxHeader,
+  SandboxContent,
+  SandboxTabs,
+  SandboxTabsBar,
+  SandboxTabsList,
+  SandboxTabsTrigger,
+  SandboxTabContent,
+} from "@/components/ai-elements/sandbox";
+import {
+  StackTrace,
+  StackTraceHeader,
+  StackTraceError,
+  StackTraceErrorType,
+  StackTraceErrorMessage,
+  StackTraceActions,
+  StackTraceCopyButton,
+  StackTraceExpandButton,
+  StackTraceContent,
+  StackTraceFrames,
+} from "@/components/ai-elements/stack-trace";
+import {
+  Terminal,
+  TerminalHeader,
+  TerminalTitle,
+  TerminalStatus,
+  TerminalActions,
+  TerminalCopyButton,
+  TerminalContent,
+} from "@/components/ai-elements/terminal";
+import {
+  TestResults,
+  TestResultsHeader,
+  TestResultsSummary,
+  TestResultsDuration,
+  TestResultsProgress,
+  TestResultsContent,
+  TestSuite,
+  TestSuiteName,
+  TestSuiteContent,
+  Test,
+  TestError,
+  TestErrorMessage,
+  TestErrorStack,
+} from "@/components/ai-elements/test-results";
+import {
   Circle,
   Mic,
   Brain,
@@ -98,6 +144,10 @@ import {
   ListOrdered,
   KeyRound,
   FolderTree,
+  Box,
+  AlertTriangle,
+  TerminalSquare,
+  FlaskConical,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -153,11 +203,15 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "queue", icon: ListOrdered },
   { state: "env-vars", icon: KeyRound },
   { state: "file-tree", icon: FolderTree },
+  { state: "sandbox", icon: Box },
+  { state: "stack-trace", icon: AlertTriangle },
+  { state: "terminal", icon: TerminalSquare },
+  { state: "test-results", icon: FlaskConical },
 ];
 
-type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree";
+type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results";
 
-const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree"];
+const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results"];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
@@ -457,6 +511,117 @@ const Index = () => {
               <FileTreeFile path="tsconfig.json" name="tsconfig.json" />
               <FileTreeFile path="README.md" name="README.md" />
             </FileTree>
+          )}
+          {/* Sandbox */}
+          {showOverlay === "sandbox" && (
+            <Sandbox defaultOpen className="w-[560px] bg-background/80 backdrop-blur-sm pointer-events-auto">
+              <SandboxHeader title="primes.py" state="output-available" />
+              <SandboxContent>
+                <SandboxTabs defaultValue="code">
+                  <SandboxTabsBar>
+                    <SandboxTabsList>
+                      <SandboxTabsTrigger value="code">Code</SandboxTabsTrigger>
+                      <SandboxTabsTrigger value="output">Output</SandboxTabsTrigger>
+                    </SandboxTabsList>
+                  </SandboxTabsBar>
+                  <SandboxTabContent value="code">
+                    <pre className="p-4 text-xs font-mono whitespace-pre-wrap leading-relaxed">{`import math
+
+def calculate_primes(limit):
+    sieve = [True] * (limit + 1)
+    sieve[0] = sieve[1] = False
+    for i in range(2, int(math.sqrt(limit)) + 1):
+        if sieve[i]:
+            for j in range(i * i, limit + 1, i):
+                sieve[j] = False
+    return [i for i, is_prime in enumerate(sieve) if is_prime]
+
+if __name__ == "__main__":
+    primes = calculate_primes(50)
+    print(f"Found {len(primes)} prime numbers up to 50:")
+    print(primes)`}</pre>
+                  </SandboxTabContent>
+                  <SandboxTabContent value="output">
+                    <pre className="p-4 text-xs font-mono whitespace-pre-wrap">{`Found 15 prime numbers up to 50:
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]`}</pre>
+                  </SandboxTabContent>
+                </SandboxTabs>
+              </SandboxContent>
+            </Sandbox>
+          )}
+          {/* Stack Trace */}
+          {showOverlay === "stack-trace" && (
+            <StackTrace
+              trace={`TypeError: Cannot read properties of undefined (reading 'map')\n    at UserList (/app/components/UserList.tsx:15:23)\n    at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:14985:18)\n    at mountIndeterminateComponent (node_modules/react-dom/cjs/react-dom.development.js:17811:13)\n    at beginWork (node_modules/react-dom/cjs/react-dom.development.js:19049:16)`}
+              defaultOpen
+              onFilePathClick={(path) => toast({ title: "File clicked", description: path })}
+              className="w-[560px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+            >
+              <StackTraceHeader>
+                <StackTraceError>
+                  <StackTraceErrorType />
+                  <StackTraceErrorMessage />
+                </StackTraceError>
+                <StackTraceActions>
+                  <StackTraceCopyButton />
+                  <StackTraceExpandButton />
+                </StackTraceActions>
+              </StackTraceHeader>
+              <StackTraceContent>
+                <StackTraceFrames />
+              </StackTraceContent>
+            </StackTrace>
+          )}
+          {/* Terminal */}
+          {showOverlay === "terminal" && (
+            <Terminal
+              output={`✓ Compiled successfully in 1.2s\n\ninfo  - Collecting page data...\ninfo  - Generating static pages (0/3)\n✓ Generated static pages (3/3)\n\nwarn  - Using experimental server actions\n\nRoute (app)                              Size     First Load JS\n┌ ○ /                                    5.2 kB   87.3 kB\n├ ○ /about                               2.1 kB   84.2 kB\n└ ○ /contact                             3.8 kB   85.9 kB\n\n✓ Build completed successfully!\nTotal time: 3.45s`}
+              className="w-[560px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+            >
+              <TerminalHeader>
+                <TerminalTitle>Build Output</TerminalTitle>
+                <TerminalActions>
+                  <TerminalStatus />
+                  <TerminalCopyButton />
+                </TerminalActions>
+              </TerminalHeader>
+              <TerminalContent />
+            </Terminal>
+          )}
+          {/* Test Results */}
+          {showOverlay === "test-results" && (
+            <TestResults
+              summary={{ passed: 12, failed: 2, skipped: 1, total: 15, duration: "3.25s" }}
+              className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+            >
+              <TestResultsHeader>
+                <TestResultsSummary />
+                <TestResultsDuration />
+              </TestResultsHeader>
+              <TestResultsProgress />
+              <TestResultsContent>
+                <TestSuite name="Authentication" defaultOpen>
+                  <TestSuiteName>Authentication</TestSuiteName>
+                  <TestSuiteContent>
+                    <Test name="should login with valid credentials" status="passed" duration={45} />
+                    <Test name="should reject invalid password" status="passed" duration={32} />
+                    <Test name="should handle expired tokens" status="passed" duration={28} />
+                  </TestSuiteContent>
+                </TestSuite>
+                <TestSuite name="User API" defaultOpen>
+                  <TestSuiteName>User API</TestSuiteName>
+                  <TestSuiteContent>
+                    <Test name="should create new user" status="failed" duration={120}>
+                      <TestError>
+                        <TestErrorMessage>Expected status 200 but received 500</TestErrorMessage>
+                        <TestErrorStack>{`  at Object.<anonymous> (src/user.test.ts:45:12)\n  at Promise.then.completed (node_modules/jest-circus/build/utils.js:391:28)`}</TestErrorStack>
+                      </TestError>
+                    </Test>
+                    <Test name="should delete user" status="skipped" />
+                  </TestSuiteContent>
+                </TestSuite>
+              </TestResultsContent>
+            </TestResults>
           )}
         </div>
       )}
