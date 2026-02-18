@@ -253,17 +253,21 @@ export const Persona: FC<PersonaProps> = memo(
     const asleepInput = useStateMachineInput(rive, stateMachine, "asleep");
 
     useEffect(() => {
-      if (listeningInput) {
-        listeningInput.value = state === "listening";
-      }
-      if (thinkingInput) {
-        thinkingInput.value = state === "thinking";
-      }
-      if (speakingInput) {
-        speakingInput.value = state === "speaking";
-      }
-      if (asleepInput) {
-        asleepInput.value = state === "asleep";
+      try {
+        if (listeningInput) {
+          listeningInput.value = state === "listening";
+        }
+        if (thinkingInput) {
+          thinkingInput.value = state === "thinking";
+        }
+        if (speakingInput) {
+          speakingInput.value = state === "speaking";
+        }
+        if (asleepInput) {
+          asleepInput.value = state === "asleep";
+        }
+      } catch {
+        // Rive state machine inputs may not be ready yet
       }
     }, [state, listeningInput, thinkingInput, speakingInput, asleepInput]);
 
