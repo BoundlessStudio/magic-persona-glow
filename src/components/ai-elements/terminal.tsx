@@ -3,6 +3,7 @@
 import type { FC, ReactNode } from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import Ansi from "ansi-to-react";
 import { cn } from "@/lib/utils";
 import { Copy, Check, Trash2, TerminalSquare } from "lucide-react";
 
@@ -152,11 +153,11 @@ export const TerminalContent: FC<{
     <div
       ref={scrollRef}
       className={cn(
-        "max-h-64 overflow-auto p-4 text-xs leading-relaxed whitespace-pre-wrap",
+        "max-h-64 overflow-auto p-4 text-xs leading-relaxed whitespace-pre-wrap bg-[hsl(220,13%,8%)] text-[hsl(0,0%,85%)]",
         className
       )}
     >
-      {output}
+      <Ansi>{output}</Ansi>
       {isStreaming && (
         <span className="inline-block w-1.5 h-3.5 bg-foreground animate-pulse ml-0.5 align-middle" />
       )}
