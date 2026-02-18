@@ -733,7 +733,7 @@ if __name__ == "__main__":
                 gaugePrimaryColor="hsl(239 84% 67%)"
                 gaugeSecondaryColor="hsl(230 20% 14%)"
               />
-              <p className="text-sm text-muted-foreground">Animated Circular Progress</p>
+              <p className="text-sm text-muted-foreground">Loading...</p>
             </div>
           )}
         </div>
