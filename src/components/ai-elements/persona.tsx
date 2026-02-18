@@ -18,7 +18,8 @@ export type PersonaState =
   | "speaking"
   | "asleep"
   | "upload"
-  | "preview";
+  | "preview"
+  | "attachments";
 
 interface PersonaProps {
   state?: PersonaState;

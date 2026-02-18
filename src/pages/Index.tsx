@@ -11,6 +11,14 @@ import {
   WebPreviewUrl,
 } from "@/components/ai-elements/web-preview";
 import {
+  Attachments,
+  Attachment,
+  AttachmentPreview,
+  AttachmentInfo,
+  AttachmentRemove,
+  type AttachmentData,
+} from "@/components/ai-elements/attachments";
+import {
   Circle,
   Mic,
   Brain,
@@ -21,12 +29,46 @@ import {
   ArrowLeft,
   ArrowRight,
   RefreshCcw,
-  MousePointerClick,
   ExternalLink,
   Maximize2,
   Sparkles,
+  Paperclip,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+
+const sampleAttachments: AttachmentData[] = [
+  {
+    id: "1",
+    type: "file",
+    filename: "mountain-landscape.jpg",
+    mediaType: "image/jpeg",
+    url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop",
+  },
+  {
+    id: "2",
+    type: "file",
+    filename: "quarterly-report-2024.pdf",
+    mediaType: "application/pdf",
+  },
+  {
+    id: "3",
+    type: "file",
+    filename: "product-demo.mp4",
+    mediaType: "video/mp4",
+  },
+  {
+    id: "4",
+    type: "source-document",
+    title: "API Documentation",
+    mediaType: "text/html",
+  },
+  {
+    id: "5",
+    type: "file",
+    filename: "meeting-recording.mp3",
+    mediaType: "audio/mpeg",
+  },
+];
 
 const stateIcons: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "idle", icon: Circle },
@@ -35,22 +77,23 @@ const stateIcons: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "speaking", icon: Megaphone },
   { state: "upload", icon: Upload },
   { state: "preview", icon: Globe },
+  { state: "attachments", icon: Paperclip },
   { state: "asleep", icon: Moon },
 ];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
-  const [showOverlay, setShowOverlay] = useState<"upload" | "preview" | null>(null);
+  const [showOverlay, setShowOverlay] = useState<"upload" | "preview" | "attachments" | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
   const exitTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const overlayStates = ["upload", "preview"] as const;
+  const overlayStates = ["upload", "preview", "attachments"] as const;
   const isOverlayState = overlayStates.includes(currentState as any);
 
   useEffect(() => {
     if (isOverlayState) {
       setOverlayExiting(false);
-      setShowOverlay(currentState as "upload" | "preview");
+      setShowOverlay(currentState as "upload" | "preview" | "attachments");
     } else if (showOverlay) {
       setOverlayExiting(true);
       clearTimeout(exitTimer.current);
@@ -106,6 +149,29 @@ const Index = () => {
               <WebPreviewBody />
               <WebPreviewConsole />
             </WebPreview>
+          )}
+          {showOverlay === "attachments" && (
+            <Attachments
+              variant="list"
+              className="w-[480px] bg-background/80 backdrop-blur-sm rounded-lg border border-border p-4 pointer-events-auto"
+            >
+              {sampleAttachments.map((file) => (
+                <Attachment
+                  key={file.id}
+                  data={file}
+                  onRemove={() =>
+                    toast({
+                      title: "Removed",
+                      description: `${file.filename || (file as any).title} removed (demo only).`,
+                    })
+                  }
+                >
+                  <AttachmentPreview />
+                  <AttachmentInfo showMediaType />
+                  <AttachmentRemove />
+                </Attachment>
+              ))}
+            </Attachments>
           )}
         </div>
       )}
