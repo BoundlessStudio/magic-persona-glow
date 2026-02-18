@@ -32,7 +32,10 @@ export type PersonaState =
   | "test-results"
   | "workflow"
   | "tweet-card"
-  | "progress-bar";
+  | "progress-bar"
+  | "hx-calendar"
+  | "hx-video"
+  | "hx-table";
 
 interface PersonaProps {
   state?: PersonaState;
