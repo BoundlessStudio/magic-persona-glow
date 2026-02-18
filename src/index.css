@@ -127,3 +127,10 @@ All colors MUST be HSL.
     background: hsl(var(--secondary));
   }
 }
+
+/* react-colorful pointer overrides */
+.react-colorful__pointer {
+  width: 20px !important;
+  height: 20px !important;
+  border-width: 3px !important;
+}
