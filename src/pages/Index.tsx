@@ -11,8 +11,20 @@ import {
   WebPreviewUrl,
 } from "@/components/ai-elements/web-preview";
 import {
-  Circle, Mic, Brain, Megaphone, Moon, Upload, Globe,
-  ArrowLeft, ArrowRight, RefreshCcw, MousePointerClick, ExternalLink, Maximize2, Sparkles,
+  Circle,
+  Mic,
+  Brain,
+  Megaphone,
+  Moon,
+  Upload,
+  Globe,
+  ArrowLeft,
+  ArrowRight,
+  RefreshCcw,
+  MousePointerClick,
+  ExternalLink,
+  Maximize2,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -103,7 +115,7 @@ const Index = () => {
                   <Maximize2 className="size-4" />
                 </WebPreviewNavigationButton>
               </WebPreviewNavigation>
-              <WebPreviewBody />
+              <WebPreviewBody src="https://preview-v0me-kzml7zc6fkcvbyhzrf47.vusercontent.net/" />
               <WebPreviewConsole />
             </WebPreview>
           )}
