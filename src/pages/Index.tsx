@@ -91,7 +91,7 @@ const Index = () => {
           )}
           {showOverlay === "preview" && (
             <WebPreview
-              defaultUrl="https://www.example.com/"
+              defaultUrl="/"
               className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <WebPreviewNavigation>
