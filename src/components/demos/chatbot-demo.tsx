@@ -24,28 +24,7 @@ interface ChatMessage {
   sources?: { href: string; title: string }[];
 }
 
-const initialMessages: ChatMessage[] = [
-  {
-    id: nanoid(),
-    from: "user",
-    content: "Can you explain how React hooks work?",
-  },
-  {
-    id: nanoid(),
-    from: "assistant",
-    content:
-      "React hooks let you use state and lifecycle features in function components.\n\n• useState — local state\n• useEffect — side effects like fetching data\n• useContext — consume context without wrapping\n• useMemo / useCallback — memoize values and functions\n\nThe key rule: only call hooks at the top level, never inside loops or conditions.",
-    reasoning: {
-      content:
-        "The user wants an overview of hooks. I'll cover the most common ones with a brief explanation of each and mention the rules of hooks.",
-      duration: 4,
-    },
-    sources: [
-      { href: "https://react.dev/reference/react", title: "React Reference" },
-      { href: "https://react.dev/learn", title: "React Learn" },
-    ],
-  },
-];
+const initialMessages: ChatMessage[] = [];
 
 const suggestions = [
   "Explain useEffect cleanup",
