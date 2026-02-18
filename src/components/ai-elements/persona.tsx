@@ -21,7 +21,11 @@ export type PersonaState =
   | "preview"
   | "attachments"
   | "chain-of-thought"
-  | "confirmation";
+  | "confirmation"
+  | "plan"
+  | "queue"
+  | "env-vars"
+  | "file-tree";
 
 interface PersonaProps {
   state?: PersonaState;
