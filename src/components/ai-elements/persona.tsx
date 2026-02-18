@@ -35,7 +35,9 @@ export type PersonaState =
   | "progress-bar"
   | "hx-calendar"
   | "hx-video"
-  | "hx-table";
+  | "hx-table"
+  | "kb-color-picker"
+  | "kb-qr-code";
 
 interface PersonaProps {
   state?: PersonaState;

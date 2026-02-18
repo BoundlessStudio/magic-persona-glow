@@ -14,6 +14,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Calendar } from "@/components/ui/calendar";
+import { ColorPicker } from "@/components/ui/color-picker";
+import { QRCode } from "@/components/ui/qr-code";
 import { Persona, type PersonaState } from "@/components/ai-elements/persona";
 import { UploadDropzone } from "@/components/ui/upload-dropzone";
 import {
@@ -185,6 +187,8 @@ import {
   CalendarDays,
   Video,
   TableIcon,
+  Palette,
+  QrCode,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -250,11 +254,13 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "hx-calendar", icon: CalendarDays },
   { state: "hx-video", icon: Video },
   { state: "hx-table", icon: TableIcon },
+  { state: "kb-color-picker", icon: Palette },
+  { state: "kb-qr-code", icon: QrCode },
 ];
 
-type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table";
+type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table" | "kb-color-picker" | "kb-qr-code";
 
-const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table"];
+const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code"];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
@@ -809,6 +815,22 @@ if __name__ == "__main__":
                   </TableRow>
                 </TableFooter>
               </Table>
+            </div>
+          )}
+          {/* Kibo UI Color Picker */}
+          {showOverlay === "kb-color-picker" && (
+            <div className="pointer-events-auto">
+              <ColorPicker />
+            </div>
+          )}
+          {/* Kibo UI QR Code */}
+          {showOverlay === "kb-qr-code" && (
+            <div className="pointer-events-auto flex flex-col items-center gap-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border p-6">
+              <QRCode
+                data="https://www.kibo-ui.com"
+                className="size-48 rounded-lg overflow-hidden"
+              />
+              <p className="text-sm text-muted-foreground">kibo-ui.com</p>
             </div>
           )}
         </div>
