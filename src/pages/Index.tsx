@@ -708,7 +708,7 @@ if __name__ == "__main__":
                 edges={wfEdges}
                 nodeTypes={wfNodeTypes}
                 edgeTypes={wfEdgeTypes}
-                className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm rounded-lg border border-border pointer-events-auto"
+                className="w-[960px] h-[540px] bg-background/80 backdrop-blur-sm rounded-lg border border-border pointer-events-auto"
               />
             );
           })()}
