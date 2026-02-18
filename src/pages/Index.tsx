@@ -35,6 +35,46 @@ import {
   ConfirmationAction,
 } from "@/components/ai-elements/confirmation";
 import {
+  Plan,
+  PlanHeader,
+  PlanTitle,
+  PlanDescription,
+  PlanTrigger,
+  PlanContent,
+  PlanFooter,
+  PlanAction,
+} from "@/components/ai-elements/plan";
+import {
+  Queue,
+  QueueSection,
+  QueueSectionTrigger,
+  QueueSectionLabel,
+  QueueSectionContent,
+  QueueList,
+  QueueItem,
+  QueueItemIndicator,
+  QueueItemContent,
+  QueueItemDescription,
+} from "@/components/ai-elements/queue";
+import {
+  EnvironmentVariables,
+  EnvironmentVariablesHeader,
+  EnvironmentVariablesTitle,
+  EnvironmentVariablesToggle,
+  EnvironmentVariablesContent,
+  EnvironmentVariable,
+  EnvironmentVariableGroup,
+  EnvironmentVariableName,
+  EnvironmentVariableValue,
+  EnvironmentVariableCopyButton,
+  EnvironmentVariableRequired,
+} from "@/components/ai-elements/environment-variables";
+import {
+  FileTree,
+  FileTreeFolder,
+  FileTreeFile,
+} from "@/components/ai-elements/file-tree";
+import {
   Circle,
   Mic,
   Brain,
@@ -54,6 +94,10 @@ import {
   ShieldCheck,
   CheckIcon,
   XIcon,
+  ClipboardList,
+  ListOrdered,
+  KeyRound,
+  FolderTree,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -105,21 +149,28 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "attachments", icon: Paperclip },
   { state: "chain-of-thought", icon: ListTree },
   { state: "confirmation", icon: ShieldCheck },
+  { state: "plan", icon: ClipboardList },
+  { state: "queue", icon: ListOrdered },
+  { state: "env-vars", icon: KeyRound },
+  { state: "file-tree", icon: FolderTree },
 ];
+
+type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree";
+
+const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree"];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
-  const [showOverlay, setShowOverlay] = useState<"upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | null>(null);
+  const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
   const exitTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const overlayStates = ["upload", "preview", "attachments", "chain-of-thought", "confirmation"] as const;
-  const isOverlayState = overlayStates.includes(currentState as any);
+  const isOverlayState = overlayStates.includes(currentState as OverlayState);
 
   useEffect(() => {
     if (isOverlayState) {
       setOverlayExiting(false);
-      setShowOverlay(currentState as "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation");
+      setShowOverlay(currentState as OverlayState);
     } else if (showOverlay) {
       setOverlayExiting(true);
       clearTimeout(exitTimer.current);
@@ -266,6 +317,146 @@ const Index = () => {
                 </ConfirmationAction>
               </ConfirmationActions>
             </Confirmation>
+          )}
+          {showOverlay === "plan" && (
+            <Plan defaultOpen className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto">
+              <PlanHeader>
+                <PlanTitle>Rewrite AI Elements to SolidJS</PlanTitle>
+                <PlanDescription>
+                  Rewrite the AI Elements component library from React to SolidJS while maintaining compatibility with existing React-based shadcn/ui components.
+                </PlanDescription>
+              </PlanHeader>
+              <PlanTrigger />
+              <PlanContent>
+                <ol className="list-decimal list-inside space-y-1.5">
+                  <li>Set up SolidJS project scaffolding</li>
+                  <li>Create solid-js/compat adapter layer</li>
+                  <li>Port all 29 components to SolidJS primitives</li>
+                  <li>Update test suite for Solid testing library</li>
+                  <li>Write migration guide for existing users</li>
+                </ol>
+              </PlanContent>
+              <PlanFooter>
+                <PlanAction variant="outline" onClick={() => toast({ title: "Cancelled" })}>Cancel</PlanAction>
+                <PlanAction onClick={() => toast({ title: "Building…", description: "Plan execution started (demo only)." })}>Build ⌘↩</PlanAction>
+              </PlanFooter>
+            </Plan>
+          )}
+          {showOverlay === "queue" && (
+            <Queue className="w-[480px] bg-background/80 backdrop-blur-sm rounded-lg border border-border p-4 pointer-events-auto">
+              <QueueSection defaultOpen>
+                <QueueSectionTrigger>
+                  <QueueSectionLabel label="Queued" count={4} />
+                </QueueSectionTrigger>
+                <QueueSectionContent>
+                  <QueueList>
+                    <QueueItem><QueueItemIndicator /><QueueItemContent>How do I set up the project?</QueueItemContent></QueueItem>
+                    <QueueItem><QueueItemIndicator /><QueueItemContent>What is the roadmap for Q4?</QueueItemContent></QueueItem>
+                    <QueueItem><QueueItemIndicator /><QueueItemContent>Please generate a changelog.</QueueItemContent></QueueItem>
+                    <QueueItem><QueueItemIndicator /><QueueItemContent>Add dark mode support.</QueueItemContent></QueueItem>
+                  </QueueList>
+                </QueueSectionContent>
+              </QueueSection>
+              <QueueSection defaultOpen>
+                <QueueSectionTrigger>
+                  <QueueSectionLabel label="Todo" count={3} />
+                </QueueSectionTrigger>
+                <QueueSectionContent>
+                  <QueueList>
+                    <QueueItem>
+                      <QueueItemIndicator completed />
+                      <div>
+                        <QueueItemContent completed>Write project documentation</QueueItemContent>
+                        <QueueItemDescription completed>Complete the README and API docs</QueueItemDescription>
+                      </div>
+                    </QueueItem>
+                    <QueueItem>
+                      <QueueItemIndicator />
+                      <div>
+                        <QueueItemContent>Implement authentication</QueueItemContent>
+                      </div>
+                    </QueueItem>
+                    <QueueItem>
+                      <QueueItemIndicator />
+                      <div>
+                        <QueueItemContent>Fix bug #42</QueueItemContent>
+                        <QueueItemDescription>Resolve crash on settings page</QueueItemDescription>
+                      </div>
+                    </QueueItem>
+                  </QueueList>
+                </QueueSectionContent>
+              </QueueSection>
+            </Queue>
+          )}
+          {showOverlay === "env-vars" && (
+            <EnvironmentVariables className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto">
+              <EnvironmentVariablesHeader>
+                <EnvironmentVariablesTitle>Environment Variables</EnvironmentVariablesTitle>
+                <EnvironmentVariablesToggle />
+              </EnvironmentVariablesHeader>
+              <EnvironmentVariablesContent>
+                <EnvironmentVariable name="DATABASE_URL" value="postgresql://user:pass@localhost:5432/db">
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableName />
+                    <EnvironmentVariableRequired />
+                  </EnvironmentVariableGroup>
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableValue />
+                    <EnvironmentVariableCopyButton />
+                  </EnvironmentVariableGroup>
+                </EnvironmentVariable>
+                <EnvironmentVariable name="API_KEY" value="sk-1234567890abcdef">
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableName />
+                    <EnvironmentVariableRequired />
+                  </EnvironmentVariableGroup>
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableValue />
+                    <EnvironmentVariableCopyButton />
+                  </EnvironmentVariableGroup>
+                </EnvironmentVariable>
+                <EnvironmentVariable name="NODE_ENV" value="production">
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableName />
+                  </EnvironmentVariableGroup>
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableValue />
+                    <EnvironmentVariableCopyButton />
+                  </EnvironmentVariableGroup>
+                </EnvironmentVariable>
+                <EnvironmentVariable name="PORT" value="3000">
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableName />
+                  </EnvironmentVariableGroup>
+                  <EnvironmentVariableGroup>
+                    <EnvironmentVariableValue />
+                    <EnvironmentVariableCopyButton />
+                  </EnvironmentVariableGroup>
+                </EnvironmentVariable>
+              </EnvironmentVariablesContent>
+            </EnvironmentVariables>
+          )}
+          {showOverlay === "file-tree" && (
+            <FileTree
+              defaultExpanded={new Set(["src", "src/components"])}
+              onSelect={(path) => toast({ title: "Selected", description: path })}
+              className="w-[320px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+            >
+              <FileTreeFolder path="src" name="src">
+                <FileTreeFolder path="src/components" name="components">
+                  <FileTreeFile path="src/components/button.tsx" name="button.tsx" />
+                  <FileTreeFile path="src/components/input.tsx" name="input.tsx" />
+                  <FileTreeFile path="src/components/modal.tsx" name="modal.tsx" />
+                </FileTreeFolder>
+                <FileTreeFolder path="src/hooks" name="hooks" />
+                <FileTreeFolder path="src/lib" name="lib" />
+                <FileTreeFile path="src/app.tsx" name="app.tsx" />
+                <FileTreeFile path="src/main.tsx" name="main.tsx" />
+              </FileTreeFolder>
+              <FileTreeFile path="package.json" name="package.json" />
+              <FileTreeFile path="tsconfig.json" name="tsconfig.json" />
+              <FileTreeFile path="README.md" name="README.md" />
+            </FileTree>
           )}
         </div>
       )}
