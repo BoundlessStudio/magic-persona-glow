@@ -135,8 +135,45 @@ All colors MUST be HSL.
   border-width: 3px !important;
 }
 
-.react-colorful__saturation {
-  aspect-ratio: 1 / 1 !important;
+/* Selection: show only saturation square */
+.color-picker-selection .react-colorful {
   height: auto !important;
-  max-height: 240px !important;
+}
+
+.color-picker-selection .react-colorful__saturation {
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 6px !important;
+}
+
+.color-picker-selection .react-colorful__hue,
+.color-picker-selection .react-colorful__alpha {
+  display: none !important;
+}
+
+/* Hue-only: show only hue bar */
+.color-picker-hue-only .react-colorful {
+  height: auto !important;
+}
+
+.color-picker-hue-only .react-colorful__saturation,
+.color-picker-hue-only .react-colorful__alpha {
+  display: none !important;
+}
+
+.color-picker-hue-only .react-colorful__hue {
+  border-radius: 6px !important;
+}
+
+/* Alpha-only: show only alpha bar */
+.color-picker-alpha-only .react-colorful {
+  height: auto !important;
+}
+
+.color-picker-alpha-only .react-colorful__saturation,
+.color-picker-alpha-only .react-colorful__hue {
+  display: none !important;
+}
+
+.color-picker-alpha-only .react-colorful__alpha {
+  border-radius: 6px !important;
 }

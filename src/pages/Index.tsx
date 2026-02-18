@@ -14,7 +14,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Calendar } from "@/components/ui/calendar";
-import { ColorPicker } from "@/components/ui/color-picker";
+import {
+  ColorPicker,
+  ColorPickerSelection,
+  ColorPickerEyeDropper,
+  ColorPickerHue,
+  ColorPickerAlpha,
+  ColorPickerFormat,
+  ColorPickerOutput,
+} from "@/components/ui/color-picker";
 import { QRCode } from "@/components/ui/qr-code";
 import { Persona, type PersonaState } from "@/components/ai-elements/persona";
 import { UploadDropzone } from "@/components/ui/upload-dropzone";
@@ -820,7 +828,20 @@ if __name__ == "__main__":
           {/* Kibo UI Color Picker */}
           {showOverlay === "kb-color-picker" && (
             <div className="pointer-events-auto">
-              <ColorPicker />
+              <ColorPicker>
+                <ColorPickerSelection />
+                <div className="flex items-center gap-2">
+                  <ColorPickerEyeDropper />
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <ColorPickerHue />
+                    <ColorPickerAlpha />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ColorPickerFormat />
+                  <ColorPickerOutput />
+                </div>
+              </ColorPicker>
             </div>
           )}
           {/* Kibo UI QR Code */}
