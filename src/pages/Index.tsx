@@ -91,32 +91,13 @@ const Index = () => {
           )}
           {showOverlay === "preview" && (
             <WebPreview
-              defaultUrl="/"
+              defaultUrl="https://www.example.com/"
               className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <WebPreviewNavigation>
-                <WebPreviewNavigationButton tooltip="Back">
-                  <ArrowLeft className="size-4" />
-                </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Forward">
-                  <ArrowRight className="size-4" />
-                </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Refresh">
-                  <RefreshCcw className="size-4" />
-                </WebPreviewNavigationButton>
                 <WebPreviewUrl />
-                <WebPreviewNavigationButton tooltip="Select">
-                  <MousePointerClick className="size-4" />
-                </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Open in new tab">
-                  <ExternalLink className="size-4" />
-                </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Fullscreen">
-                  <Maximize2 className="size-4" />
-                </WebPreviewNavigationButton>
               </WebPreviewNavigation>
-              <WebPreviewBody src="https://www.example.com/" />
-              <WebPreviewConsole />
+              <WebPreviewBody src={previewUrl} />
             </WebPreview>
           )}
         </div>
