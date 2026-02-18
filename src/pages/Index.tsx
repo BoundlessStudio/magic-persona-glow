@@ -91,17 +91,20 @@ const sampleAttachments: AttachmentData[] = [
   },
 ];
 
-const stateIcons: { state: PersonaState; icon: typeof Circle }[] = [
+const personaStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "idle", icon: Circle },
   { state: "listening", icon: Mic },
   { state: "thinking", icon: Brain },
   { state: "speaking", icon: Megaphone },
+  { state: "asleep", icon: Moon },
+];
+
+const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "upload", icon: Upload },
   { state: "preview", icon: Globe },
   { state: "attachments", icon: Paperclip },
   { state: "chain-of-thought", icon: ListTree },
   { state: "confirmation", icon: ShieldCheck },
-  { state: "asleep", icon: Moon },
 ];
 
 const Index = () => {
@@ -266,20 +269,37 @@ const Index = () => {
           )}
         </div>
       )}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
-        {stateIcons.map(({ state, icon: Icon }) => (
-          <button
-            key={state}
-            onClick={() => setCurrentState(state)}
-            className={`rounded-full p-2.5 transition-all ${
-              currentState === state
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Icon size={20} />
-          </button>
-        ))}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+        <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
+          {personaStates.map(({ state, icon: Icon }) => (
+            <button
+              key={state}
+              onClick={() => setCurrentState(state)}
+              className={`rounded-full p-2.5 transition-all ${
+                currentState === state
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Icon size={20} />
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
+          {componentStates.map(({ state, icon: Icon }) => (
+            <button
+              key={state}
+              onClick={() => setCurrentState(state)}
+              className={`rounded-full p-2.5 transition-all ${
+                currentState === state
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Icon size={20} />
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
