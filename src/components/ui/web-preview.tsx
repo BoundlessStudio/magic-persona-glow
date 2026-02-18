@@ -16,7 +16,7 @@ interface WebPreviewProps {
 }
 
 export const WebPreview: FC<WebPreviewProps> = ({
-  defaultUrl = "/",
+  defaultUrl = "https://www.example.com/",
   className,
 }) => {
   const [url, setUrl] = useState(defaultUrl);
