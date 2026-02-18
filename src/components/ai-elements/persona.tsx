@@ -30,7 +30,9 @@ export type PersonaState =
   | "stack-trace"
   | "terminal"
   | "test-results"
-  | "workflow";
+  | "workflow"
+  | "tweet-card"
+  | "progress-bar";
 
 interface PersonaProps {
   state?: PersonaState;

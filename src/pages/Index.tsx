@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Ripple } from "@/components/ui/ripple";
+import { AnimatedCircularProgressBar } from "@/components/ui/animated-circular-progress-bar";
+import { ClientTweetCard } from "@/components/ui/tweet-card";
 import { Persona, type PersonaState } from "@/components/ai-elements/persona";
 import { UploadDropzone } from "@/components/ui/upload-dropzone";
 import {
@@ -165,6 +167,8 @@ import {
   TerminalSquare,
   FlaskConical,
   Workflow,
+  Twitter,
+  Gauge,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -225,11 +229,13 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "terminal", icon: TerminalSquare },
   { state: "test-results", icon: FlaskConical },
   { state: "workflow", icon: Workflow },
+  { state: "tweet-card", icon: Twitter },
+  { state: "progress-bar", icon: Gauge },
 ];
 
-type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow";
+type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar";
 
-const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow"];
+const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar"];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
@@ -712,6 +718,23 @@ if __name__ == "__main__":
               />
             );
           })()}
+          {/* Tweet Card */}
+          {showOverlay === "tweet-card" && (
+            <div className="w-[480px] pointer-events-auto">
+              <ClientTweetCard id="1668408059125702661" />
+            </div>
+          )}
+          {/* Animated Circular Progress Bar */}
+          {showOverlay === "progress-bar" && (
+            <div className="flex flex-col items-center gap-4 pointer-events-auto bg-background/80 backdrop-blur-sm rounded-lg border border-border p-8">
+              <AnimatedCircularProgressBar
+                value={72}
+                gaugePrimaryColor="hsl(239 84% 67%)"
+                gaugeSecondaryColor="hsl(230 20% 14%)"
+              />
+              <p className="text-sm text-muted-foreground">Animated Circular Progress</p>
+            </div>
+          )}
         </div>
       )}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
