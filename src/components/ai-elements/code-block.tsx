@@ -1,10 +1,11 @@
 "use client";
 
 import type { FC, ReactNode } from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Copy, Check } from "lucide-react";
+import { codeToHtml } from "shiki";
 
 /* ── Context ── */
 
@@ -17,6 +18,38 @@ const CodeBlockContext = createContext<CodeBlockContextValue>({
   code: "",
   language: "text",
 });
+
+/* ── Highlighted code hook ── */
+
+function useHighlightedCode(code: string, language: string) {
+  const [html, setHtml] = useState<string | null>(null);
+  const prevKey = useRef("");
+
+  useEffect(() => {
+    const key = `${language}:${code}`;
+    if (key === prevKey.current) return;
+    prevKey.current = key;
+
+    let cancelled = false;
+
+    codeToHtml(code, {
+      lang: language,
+      theme: "github-dark",
+    })
+      .then((result) => {
+        if (!cancelled) setHtml(result);
+      })
+      .catch(() => {
+        if (!cancelled) setHtml(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [code, language]);
+
+  return html;
+}
 
 /* ── Root ── */
 
@@ -35,7 +68,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({
   className,
   children,
 }) => {
-  const lines = code.split("\n");
+  const highlightedHtml = useHighlightedCode(code, language);
 
   return (
     <CodeBlockContext.Provider value={{ code, language }}>
@@ -47,24 +80,31 @@ export const CodeBlock: FC<CodeBlockProps> = ({
       >
         {children}
         <div className="overflow-auto">
-          <pre className="p-4 text-xs font-mono leading-relaxed">
-            {showLineNumbers ? (
-              <table className="border-collapse">
-                <tbody>
-                  {lines.map((line, i) => (
-                    <tr key={i}>
-                      <td className="pr-4 text-right text-muted-foreground select-none w-8">
-                        {i + 1}
-                      </td>
-                      <td className="whitespace-pre-wrap">{line}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <code className="whitespace-pre-wrap">{code}</code>
-            )}
-          </pre>
+          {highlightedHtml ? (
+            <div
+              className="[&_pre]:p-4 [&_pre]:text-xs [&_pre]:leading-relaxed [&_pre]:!bg-transparent [&_code]:!bg-transparent"
+              dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+            />
+          ) : (
+            <pre className="p-4 text-xs font-mono leading-relaxed">
+              {showLineNumbers ? (
+                <table className="border-collapse">
+                  <tbody>
+                    {code.split("\n").map((line, i) => (
+                      <tr key={i}>
+                        <td className="pr-4 text-right text-muted-foreground select-none w-8">
+                          {i + 1}
+                        </td>
+                        <td className="whitespace-pre-wrap">{line}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <code className="whitespace-pre-wrap">{code}</code>
+              )}
+            </pre>
+          )}
         </div>
       </div>
     </CodeBlockContext.Provider>
