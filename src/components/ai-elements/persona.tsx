@@ -25,7 +25,11 @@ export type PersonaState =
   | "plan"
   | "queue"
   | "env-vars"
-  | "file-tree";
+  | "file-tree"
+  | "sandbox"
+  | "stack-trace"
+  | "terminal"
+  | "test-results";
 
 interface PersonaProps {
   state?: PersonaState;
