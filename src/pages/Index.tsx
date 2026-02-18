@@ -169,6 +169,7 @@ import {
   Workflow,
   Twitter,
   Gauge,
+  CreditCard,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -229,7 +230,7 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "terminal", icon: TerminalSquare },
   { state: "test-results", icon: FlaskConical },
   { state: "workflow", icon: Workflow },
-  { state: "tweet-card", icon: Twitter },
+  { state: "tweet-card", icon: CreditCard },
   { state: "progress-bar", icon: Gauge },
 ];
 
