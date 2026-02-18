@@ -95,9 +95,16 @@ const Index = () => {
               className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <WebPreviewNavigation>
+                <WebPreviewNavigationButton tooltip="Back"><ArrowLeft size={14} /></WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Forward"><ArrowRight size={14} /></WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Refresh"><RefreshCcw size={14} /></WebPreviewNavigationButton>
                 <WebPreviewUrl />
+                <WebPreviewNavigationButton tooltip="AI"><Sparkles size={14} /></WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Open in new tab"><ExternalLink size={14} /></WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Fullscreen"><Maximize2 size={14} /></WebPreviewNavigationButton>
               </WebPreviewNavigation>
               <WebPreviewBody />
+              <WebPreviewConsole />
             </WebPreview>
           )}
         </div>
