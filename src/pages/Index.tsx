@@ -97,7 +97,7 @@ const Index = () => {
               <WebPreviewNavigation>
                 <WebPreviewUrl />
               </WebPreviewNavigation>
-              <WebPreviewBody src={previewUrl} />
+              <WebPreviewBody />
             </WebPreview>
           )}
         </div>
