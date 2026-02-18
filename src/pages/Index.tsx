@@ -2,6 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import { Ripple } from "@/components/ui/ripple";
 import { AnimatedCircularProgressBar } from "@/components/ui/animated-circular-progress-bar";
 import { ClientTweetCard } from "@/components/ui/tweet-card";
+import { VideoPlayer } from "@/components/ui/video-player";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Calendar } from "@/components/ui/calendar";
 import { Persona, type PersonaState } from "@/components/ai-elements/persona";
 import { UploadDropzone } from "@/components/ui/upload-dropzone";
 import {
@@ -170,6 +182,9 @@ import {
   Twitter,
   Gauge,
   CreditCard,
+  CalendarDays,
+  Video,
+  TableIcon,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -232,11 +247,14 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "workflow", icon: Workflow },
   { state: "tweet-card", icon: CreditCard },
   { state: "progress-bar", icon: Gauge },
+  { state: "hx-calendar", icon: CalendarDays },
+  { state: "hx-video", icon: Video },
+  { state: "hx-table", icon: TableIcon },
 ];
 
-type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar";
+type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table";
 
-const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar"];
+const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table"];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
@@ -734,6 +752,63 @@ if __name__ == "__main__":
                 gaugeSecondaryColor="hsl(230 20% 14%)"
               />
               <p className="text-sm text-muted-foreground">Loading...</p>
+            </div>
+          )}
+          {/* HextaUI Calendar */}
+          {showOverlay === "hx-calendar" && (
+            <div className="pointer-events-auto bg-background/80 backdrop-blur-sm rounded-lg border border-border p-4">
+              <Calendar
+                mode="single"
+                className="p-3 pointer-events-auto"
+              />
+            </div>
+          )}
+          {/* HextaUI Video Player */}
+          {showOverlay === "hx-video" && (
+            <VideoPlayer
+              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              size="lg"
+              className="pointer-events-auto"
+            />
+          )}
+          {/* HextaUI Table */}
+          {showOverlay === "hx-table" && (
+            <div className="w-[640px] pointer-events-auto bg-background/80 backdrop-blur-sm rounded-lg border border-border p-4">
+              <Table>
+                <TableCaption>A list of your recent invoices.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">Invoice</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[
+                    { id: "INV001", status: "Paid", method: "Credit Card", amount: "$250.00" },
+                    { id: "INV002", status: "Pending", method: "PayPal", amount: "$150.00" },
+                    { id: "INV003", status: "Unpaid", method: "Bank Transfer", amount: "$350.00" },
+                    { id: "INV004", status: "Paid", method: "Credit Card", amount: "$450.00" },
+                    { id: "INV005", status: "Paid", method: "PayPal", amount: "$550.00" },
+                    { id: "INV006", status: "Pending", method: "Bank Transfer", amount: "$200.00" },
+                    { id: "INV007", status: "Unpaid", method: "Credit Card", amount: "$300.00" },
+                  ].map((inv) => (
+                    <TableRow key={inv.id}>
+                      <TableCell className="font-medium">{inv.id}</TableCell>
+                      <TableCell>{inv.status}</TableCell>
+                      <TableCell>{inv.method}</TableCell>
+                      <TableCell className="text-right">{inv.amount}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={3}>Total</TableCell>
+                    <TableCell className="text-right">$2,250.00</TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
             </div>
           )}
         </div>
