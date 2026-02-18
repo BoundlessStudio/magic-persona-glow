@@ -19,6 +19,14 @@ import {
   type AttachmentData,
 } from "@/components/ai-elements/attachments";
 import {
+  ChainOfThought,
+  ChainOfThoughtHeader,
+  ChainOfThoughtContent,
+  ChainOfThoughtStep,
+  ChainOfThoughtSearchResults,
+  ChainOfThoughtSearchResult,
+} from "@/components/ai-elements/chain-of-thought";
+import {
   Circle,
   Mic,
   Brain,
@@ -33,6 +41,8 @@ import {
   Maximize2,
   Sparkles,
   Paperclip,
+  Search,
+  ListTree,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -78,22 +88,23 @@ const stateIcons: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "upload", icon: Upload },
   { state: "preview", icon: Globe },
   { state: "attachments", icon: Paperclip },
+  { state: "chain-of-thought", icon: ListTree },
   { state: "asleep", icon: Moon },
 ];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
-  const [showOverlay, setShowOverlay] = useState<"upload" | "preview" | "attachments" | null>(null);
+  const [showOverlay, setShowOverlay] = useState<"upload" | "preview" | "attachments" | "chain-of-thought" | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
   const exitTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const overlayStates = ["upload", "preview", "attachments"] as const;
+  const overlayStates = ["upload", "preview", "attachments", "chain-of-thought"] as const;
   const isOverlayState = overlayStates.includes(currentState as any);
 
   useEffect(() => {
     if (isOverlayState) {
       setOverlayExiting(false);
-      setShowOverlay(currentState as "upload" | "preview" | "attachments");
+      setShowOverlay(currentState as "upload" | "preview" | "attachments" | "chain-of-thought");
     } else if (showOverlay) {
       setOverlayExiting(true);
       clearTimeout(exitTimer.current);
@@ -172,6 +183,42 @@ const Index = () => {
                 </Attachment>
               ))}
             </Attachments>
+          )}
+          {showOverlay === "chain-of-thought" && (
+            <ChainOfThought
+              defaultOpen
+              className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+            >
+              <ChainOfThoughtHeader>Chain of Thought</ChainOfThoughtHeader>
+              <ChainOfThoughtContent>
+                <ChainOfThoughtStep
+                  icon={Search}
+                  label="Searching for profiles for Hayden Bleasel"
+                  status="complete"
+                >
+                  <ChainOfThoughtSearchResults>
+                    <ChainOfThoughtSearchResult>www.x.com</ChainOfThoughtSearchResult>
+                    <ChainOfThoughtSearchResult>www.instagram.com</ChainOfThoughtSearchResult>
+                    <ChainOfThoughtSearchResult>www.github.com</ChainOfThoughtSearchResult>
+                  </ChainOfThoughtSearchResults>
+                </ChainOfThoughtStep>
+                <ChainOfThoughtStep
+                  label="Found the profile photo for Hayden Bleasel"
+                  status="complete"
+                  description="Hayden Bleasel is an Australian product designer, software engineer, and founder. He is currently based in the United States working for Vercel."
+                />
+                <ChainOfThoughtStep
+                  icon={Search}
+                  label="Searching for recent work..."
+                  status="active"
+                >
+                  <ChainOfThoughtSearchResults>
+                    <ChainOfThoughtSearchResult>www.github.com</ChainOfThoughtSearchResult>
+                    <ChainOfThoughtSearchResult>www.dribbble.com</ChainOfThoughtSearchResult>
+                  </ChainOfThoughtSearchResults>
+                </ChainOfThoughtStep>
+              </ChainOfThoughtContent>
+            </ChainOfThought>
           )}
         </div>
       )}
