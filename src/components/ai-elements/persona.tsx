@@ -19,7 +19,8 @@ export type PersonaState =
   | "asleep"
   | "upload"
   | "preview"
-  | "attachments";
+  | "attachments"
+  | "chain-of-thought";
 
 interface PersonaProps {
   state?: PersonaState;
