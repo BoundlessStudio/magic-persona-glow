@@ -128,9 +128,14 @@ All colors MUST be HSL.
   }
 }
 
-/* react-colorful pointer overrides */
+/* react-colorful overrides */
 .react-colorful__pointer {
   width: 20px !important;
   height: 20px !important;
   border-width: 3px !important;
+}
+
+.react-colorful__saturation {
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
 }
