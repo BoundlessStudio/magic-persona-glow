@@ -162,6 +162,7 @@ All colors MUST be HSL.
 
 .color-picker-hue-only .react-colorful__hue {
   border-radius: 6px !important;
+  height: 12px !important;
 }
 
 /* Alpha-only: show only alpha bar */
@@ -176,4 +177,5 @@ All colors MUST be HSL.
 
 .color-picker-alpha-only .react-colorful__alpha {
   border-radius: 6px !important;
+  height: 12px !important;
 }
