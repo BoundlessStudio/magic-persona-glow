@@ -45,11 +45,19 @@ const Index = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background overflow-hidden">
       <Ripple className="z-0" />
-      <div className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isOverlayVisible && !overlayExiting ? "opacity-30" : ""}`}>
-        <Persona state={isOverlayState ? "idle" : currentState} variant="halo" className="size-64 pointer-events-auto" />
+      <div
+        className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isOverlayVisible && !overlayExiting ? "opacity-30" : ""}`}
+      >
+        <Persona
+          state={isOverlayState ? "idle" : currentState}
+          variant="halo"
+          className="size-64 pointer-events-auto"
+        />
       </div>
       {isOverlayVisible && (
-        <div className={`absolute inset-0 z-30 flex items-center justify-center pointer-events-none ${overlayExiting ? "animate-scale-out" : "animate-scale-in"}`}>
+        <div
+          className={`absolute inset-0 z-30 flex items-center justify-center pointer-events-none ${overlayExiting ? "animate-scale-out" : "animate-scale-in"}`}
+        >
           {showOverlay === "upload" && (
             <UploadDropzone
               description={{ maxFiles: 4, maxFileSize: "2MB", fileTypes: "JPEG, PNG, GIF" }}
@@ -60,24 +68,27 @@ const Index = () => {
             />
           )}
           {showOverlay === "preview" && (
-            <WebPreview className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto" />
+            <WebPreview
+              defaultUrl="https://www.example.com/"
+              className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+            />
           )}
         </div>
       )}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
-          {stateIcons.map(({ state, icon: Icon }) => (
-            <button
-              key={state}
-              onClick={() => setCurrentState(state)}
-              className={`rounded-full p-2.5 transition-all ${
-                currentState === state
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Icon size={20} />
-            </button>
-          ))}
+        {stateIcons.map(({ state, icon: Icon }) => (
+          <button
+            key={state}
+            onClick={() => setCurrentState(state)}
+            className={`rounded-full p-2.5 transition-all ${
+              currentState === state
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Icon size={20} />
+          </button>
+        ))}
       </div>
     </div>
   );
