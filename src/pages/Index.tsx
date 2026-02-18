@@ -68,10 +68,33 @@ const Index = () => {
             />
           )}
           {showOverlay === "preview" && (
-            <WebPreview
-              defaultUrl="https://www.example.com/"
-              className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto"
-            />
+            <WebPreview defaultUrl="/">
+              <WebPreviewNavigation>
+                <WebPreviewNavigationButton onClick={handleGoBack} tooltip="Go back">
+                  <ArrowLeftIcon className="size-4" />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton onClick={handleGoForward} tooltip="Go forward">
+                  <ArrowRightIcon className="size-4" />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton onClick={handleReload} tooltip="Reload">
+                  <RefreshCcwIcon className="size-4" />
+                </WebPreviewNavigationButton>
+                <WebPreviewUrl />
+                <WebPreviewNavigationButton onClick={handleSelect} tooltip="Select">
+                  <MousePointerClickIcon className="size-4" />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton onClick={handleOpenInNewTab} tooltip="Open in new tab">
+                  <ExternalLinkIcon className="size-4" />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton onClick={handleToggleFullscreen} tooltip="Maximize">
+                  <Maximize2Icon className="size-4" />
+                </WebPreviewNavigationButton>
+              </WebPreviewNavigation>
+
+              <WebPreviewBody src="https://preview-v0me-kzml7zc6fkcvbyhzrf47.vusercontent.net/" />
+
+              <WebPreviewConsole logs={exampleLogs} />
+            </WebPreview>
           )}
         </div>
       )}
