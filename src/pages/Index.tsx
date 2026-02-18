@@ -125,6 +125,15 @@ import {
 } from "@/components/ai-elements/node";
 import { nanoid } from "nanoid";
 import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import {
   StackTrace,
   StackTraceHeader,
   StackTraceError,
@@ -197,6 +206,7 @@ import {
   TableIcon,
   Palette,
   QrCode,
+  BarChart3,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -264,11 +274,12 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "hx-table", icon: TableIcon },
   { state: "kb-color-picker", icon: Palette },
   { state: "kb-qr-code", icon: QrCode },
+  { state: "kb-chart", icon: BarChart3 },
 ];
 
-type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table" | "kb-color-picker" | "kb-qr-code";
+type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table" | "kb-color-picker" | "kb-qr-code" | "kb-chart";
 
-const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code"];
+const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart"];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
@@ -852,6 +863,39 @@ if __name__ == "__main__":
                 className="size-48 rounded-lg overflow-hidden"
               />
               <p className="text-sm text-muted-foreground">www.example.com</p>
+            </div>
+          )}
+          {/* Chart */}
+          {showOverlay === "kb-chart" && (
+            <div className="pointer-events-auto w-[560px] bg-background/80 backdrop-blur-sm rounded-lg border border-border p-6">
+              <ChartContainer
+                config={{
+                  commits: { label: "Commits", color: "hsl(var(--primary))" },
+                  prs: { label: "Pull Requests", color: "hsl(var(--accent))" },
+                  issues: { label: "Issues", color: "hsl(var(--destructive))" },
+                } satisfies ChartConfig}
+                className="h-[320px] w-full"
+              >
+                <BarChart
+                  data={[
+                    { month: "Jan", commits: 186, prs: 80, issues: 24 },
+                    { month: "Feb", commits: 305, prs: 120, issues: 18 },
+                    { month: "Mar", commits: 237, prs: 95, issues: 32 },
+                    { month: "Apr", commits: 173, prs: 60, issues: 15 },
+                    { month: "May", commits: 409, prs: 150, issues: 42 },
+                    { month: "Jun", commits: 294, prs: 110, issues: 28 },
+                  ]}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="commits" fill="var(--color-commits)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="prs" fill="var(--color-prs)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="issues" fill="var(--color-issues)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ChartContainer>
             </div>
           )}
         </div>
