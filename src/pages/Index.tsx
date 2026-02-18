@@ -68,32 +68,32 @@ const Index = () => {
             />
           )}
           {showOverlay === "preview" && (
-            <WebPreview defaultUrl="/">
+            <WebPreview defaultUrl="https://www.example.com/">
               <WebPreviewNavigation>
-                <WebPreviewNavigationButton onClick={handleGoBack} tooltip="Go back">
+                <WebPreviewNavigationButton tooltip="Go back">
                   <ArrowLeftIcon className="size-4" />
                 </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton onClick={handleGoForward} tooltip="Go forward">
+                <WebPreviewNavigationButton tooltip="Go forward">
                   <ArrowRightIcon className="size-4" />
                 </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton onClick={handleReload} tooltip="Reload">
+                <WebPreviewNavigationButton tooltip="Reload">
                   <RefreshCcwIcon className="size-4" />
                 </WebPreviewNavigationButton>
                 <WebPreviewUrl />
-                <WebPreviewNavigationButton onClick={handleSelect} tooltip="Select">
+                <WebPreviewNavigationButton tooltip="Select">
                   <MousePointerClickIcon className="size-4" />
                 </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton onClick={handleOpenInNewTab} tooltip="Open in new tab">
+                <WebPreviewNavigationButton tooltip="Open in new tab">
                   <ExternalLinkIcon className="size-4" />
                 </WebPreviewNavigationButton>
-                <WebPreviewNavigationButton onClick={handleToggleFullscreen} tooltip="Maximize">
+                <WebPreviewNavigationButton tooltip="Maximize">
                   <Maximize2Icon className="size-4" />
                 </WebPreviewNavigationButton>
               </WebPreviewNavigation>
 
-              <WebPreviewBody src="https://preview-v0me-kzml7zc6fkcvbyhzrf47.vusercontent.net/" />
+              <WebPreviewBody src="https://www.example.com/" />
 
-              <WebPreviewConsole logs={exampleLogs} />
+              <WebPreviewConsole />
             </WebPreview>
           )}
         </div>
