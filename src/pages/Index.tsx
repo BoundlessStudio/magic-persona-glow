@@ -133,6 +133,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { ChatbotDemo } from "@/components/demos/chatbot-demo";
 import {
   StackTrace,
   StackTraceHeader,
@@ -207,6 +208,7 @@ import {
   Palette,
   QrCode,
   BarChart3,
+  MessageCircle,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -275,11 +277,12 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "kb-color-picker", icon: Palette },
   { state: "kb-qr-code", icon: QrCode },
   { state: "kb-chart", icon: BarChart3 },
+  { state: "chatbot", icon: MessageCircle },
 ];
 
-type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table" | "kb-color-picker" | "kb-qr-code" | "kb-chart";
+type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table" | "kb-color-picker" | "kb-qr-code" | "kb-chart" | "chatbot";
 
-const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart"];
+const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart", "chatbot"];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
@@ -896,6 +899,12 @@ if __name__ == "__main__":
                   <Bar dataKey="issues" fill="var(--color-issues)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ChartContainer>
+            </div>
+          )}
+          {/* Chatbot */}
+          {showOverlay === "chatbot" && (
+            <div className="pointer-events-auto w-[480px] h-[600px] bg-background/80 backdrop-blur-sm rounded-lg border border-border overflow-hidden">
+              <ChatbotDemo />
             </div>
           )}
         </div>

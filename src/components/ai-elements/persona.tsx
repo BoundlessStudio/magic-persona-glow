@@ -38,7 +38,8 @@ export type PersonaState =
   | "hx-table"
   | "kb-color-picker"
   | "kb-qr-code"
-  | "kb-chart";
+  | "kb-chart"
+  | "chatbot";
 
 interface PersonaProps {
   state?: PersonaState;
