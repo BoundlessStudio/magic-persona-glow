@@ -575,7 +575,7 @@ if __name__ == "__main__":
           {/* Terminal */}
           {showOverlay === "terminal" && (
             <Terminal
-              output={`✓ Compiled successfully in 1.2s\n\ninfo  - Collecting page data...\ninfo  - Generating static pages (0/3)\n✓ Generated static pages (3/3)\n\nwarn  - Using experimental server actions\n\nRoute (app)                              Size     First Load JS\n┌ ○ /                                    5.2 kB   87.3 kB\n├ ○ /about                               2.1 kB   84.2 kB\n└ ○ /contact                             3.8 kB   85.9 kB\n\n✓ Build completed successfully!\nTotal time: 3.45s`}
+              output={`\u001B[32m✓\u001B[0m Compiled successfully in 1.2s\n\u001B[1m\u001B[34minfo\u001B[0m  - Collecting page data...\n\u001B[1m\u001B[34minfo\u001B[0m  - Generating static pages (0/3)\n\u001B[32m✓\u001B[0m Generated static pages (3/3)\n\n\u001B[1m\u001B[33mwarn\u001B[0m  - Using \u001B[1mexperimental\u001B[0m server actions\n\n\u001B[36mRoute (app)\u001B[0m                              \u001B[36mSize\u001B[0m     \u001B[36mFirst Load JS\u001B[0m\n\u001B[37m┌ ○ /\u001B[0m                                    \u001B[32m5.2 kB\u001B[0m   \u001B[32m87.3 kB\u001B[0m\n\u001B[37m├ ○ /about\u001B[0m                               \u001B[32m2.1 kB\u001B[0m   \u001B[32m84.2 kB\u001B[0m\n\u001B[37m└ ○ /contact\u001B[0m                             \u001B[32m3.8 kB\u001B[0m   \u001B[32m85.9 kB\u001B[0m\n\n\u001B[32m✓\u001B[0m Build completed successfully!\n\u001B[90mTotal time: 3.45s\u001B[0m`}
               className="w-[560px] bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <TerminalHeader>
