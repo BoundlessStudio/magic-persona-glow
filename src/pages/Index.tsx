@@ -518,7 +518,7 @@ const Index = () => {
           )}
           {/* Sandbox */}
           {showOverlay === "sandbox" && (
-            <Sandbox defaultOpen className="w-[560px] bg-background/80 backdrop-blur-sm pointer-events-auto">
+            <Sandbox defaultOpen className="w-[960px] bg-background/80 backdrop-blur-sm pointer-events-auto">
               <SandboxHeader title="primes.py" state="output-available" />
               <SandboxContent>
                 <SandboxTabs defaultValue="code">
