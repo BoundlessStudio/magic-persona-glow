@@ -27,6 +27,14 @@ import {
   ChainOfThoughtSearchResult,
 } from "@/components/ai-elements/chain-of-thought";
 import {
+  Confirmation,
+  ConfirmationRequest,
+  ConfirmationAccepted,
+  ConfirmationRejected,
+  ConfirmationActions,
+  ConfirmationAction,
+} from "@/components/ai-elements/confirmation";
+import {
   Circle,
   Mic,
   Brain,
@@ -43,6 +51,9 @@ import {
   Paperclip,
   Search,
   ListTree,
+  ShieldCheck,
+  CheckIcon,
+  XIcon,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -89,22 +100,23 @@ const stateIcons: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "preview", icon: Globe },
   { state: "attachments", icon: Paperclip },
   { state: "chain-of-thought", icon: ListTree },
+  { state: "confirmation", icon: ShieldCheck },
   { state: "asleep", icon: Moon },
 ];
 
 const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
-  const [showOverlay, setShowOverlay] = useState<"upload" | "preview" | "attachments" | "chain-of-thought" | null>(null);
+  const [showOverlay, setShowOverlay] = useState<"upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
   const exitTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const overlayStates = ["upload", "preview", "attachments", "chain-of-thought"] as const;
+  const overlayStates = ["upload", "preview", "attachments", "chain-of-thought", "confirmation"] as const;
   const isOverlayState = overlayStates.includes(currentState as any);
 
   useEffect(() => {
     if (isOverlayState) {
       setOverlayExiting(false);
-      setShowOverlay(currentState as "upload" | "preview" | "attachments" | "chain-of-thought");
+      setShowOverlay(currentState as "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation");
     } else if (showOverlay) {
       setOverlayExiting(true);
       clearTimeout(exitTimer.current);
@@ -219,6 +231,38 @@ const Index = () => {
                 </ChainOfThoughtStep>
               </ChainOfThoughtContent>
             </ChainOfThought>
+          )}
+          {showOverlay === "confirmation" && (
+            <Confirmation
+              state="approval-requested"
+              approval={{ id: "demo-1" }}
+              className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto"
+            >
+              <ConfirmationRequest>
+                This tool wants to delete the file <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">/tmp/example.txt</code>. Do you approve this action?
+              </ConfirmationRequest>
+              <ConfirmationAccepted>
+                <CheckIcon className="size-4" />
+                <span>You approved this tool execution</span>
+              </ConfirmationAccepted>
+              <ConfirmationRejected>
+                <XIcon className="size-4" />
+                <span>You rejected this tool execution</span>
+              </ConfirmationRejected>
+              <ConfirmationActions>
+                <ConfirmationAction
+                  variant="outline"
+                  onClick={() => toast({ title: "Rejected", description: "Tool execution rejected (demo only)." })}
+                >
+                  Reject
+                </ConfirmationAction>
+                <ConfirmationAction
+                  onClick={() => toast({ title: "Approved", description: "Tool execution approved (demo only)." })}
+                >
+                  Approve
+                </ConfirmationAction>
+              </ConfirmationActions>
+            </Confirmation>
           )}
         </div>
       )}
