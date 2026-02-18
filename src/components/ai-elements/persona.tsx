@@ -20,7 +20,8 @@ export type PersonaState =
   | "upload"
   | "preview"
   | "attachments"
-  | "chain-of-thought";
+  | "chain-of-thought"
+  | "confirmation";
 
 interface PersonaProps {
   state?: PersonaState;
