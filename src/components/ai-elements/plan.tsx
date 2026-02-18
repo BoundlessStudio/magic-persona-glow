@@ -111,14 +111,15 @@ interface PlanTriggerProps {
 
 export const PlanTrigger: FC<PlanTriggerProps> = ({ className, children }) => (
   <CollapsibleTrigger asChild>
-    <Button
-      variant="ghost"
-      size="sm"
-      className={cn("gap-1 text-xs text-muted-foreground", className)}
+    <button
+      className={cn(
+        "flex items-center gap-1 px-4 pb-2 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+        className
+      )}
     >
       {children ?? "Toggle plan"}
       <ChevronDown className="size-3 transition-transform duration-200 [[data-state=open]_&]:rotate-180" />
-    </Button>
+    </button>
   </CollapsibleTrigger>
 );
 
