@@ -29,7 +29,8 @@ export type PersonaState =
   | "sandbox"
   | "stack-trace"
   | "terminal"
-  | "test-results";
+  | "test-results"
+  | "workflow";
 
 interface PersonaProps {
   state?: PersonaState;
