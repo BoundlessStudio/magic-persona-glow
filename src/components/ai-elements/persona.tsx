@@ -37,7 +37,8 @@ export type PersonaState =
   | "hx-video"
   | "hx-table"
   | "kb-color-picker"
-  | "kb-qr-code";
+  | "kb-qr-code"
+  | "kb-chart";
 
 interface PersonaProps {
   state?: PersonaState;
