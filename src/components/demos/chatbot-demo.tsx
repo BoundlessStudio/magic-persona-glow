@@ -130,14 +130,6 @@ export const ChatbotDemo = () => {
         ))}
       </ConversationContent>
 
-      <Suggestions>
-        {suggestions.map((s) => (
-          <Suggestion key={s} onClick={() => handleSuggestion(s)}>
-            {s}
-          </Suggestion>
-        ))}
-      </Suggestions>
-
       <PromptInput
         value={text}
         onValueChange={setText}
