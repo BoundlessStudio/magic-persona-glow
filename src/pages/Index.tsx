@@ -283,10 +283,12 @@ type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | 
 const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart", "chatbot"];
 
 const Index = () => {
-  const { voiceState } = useRealtimeVoice({ autoConnect: true });
+  const { voiceState, connect, disconnect } = useRealtimeVoice();
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
   const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
+
+  const isVoiceConnected = voiceState !== "disconnected";
 
   // Derive persona state from voice state, unless an overlay is active
   useEffect(() => {
@@ -294,6 +296,14 @@ const Index = () => {
       setCurrentState(voiceStateToPersona[voiceState]);
     }
   }, [voiceState, showOverlay]);
+
+  const handlePersonaClick = () => {
+    if (isVoiceConnected) {
+      disconnect();
+    } else {
+      connect();
+    }
+  };
   const exitTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const isOverlayState = overlayStates.includes(currentState as OverlayState);
@@ -321,11 +331,16 @@ const Index = () => {
       <div
         className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isOverlayVisible && !overlayExiting ? "opacity-30" : ""}`}
       >
-        <Persona
-          state={isOverlayState ? "idle" : currentState}
-          variant="halo"
-          className="size-64 pointer-events-auto"
-        />
+        <button
+          onClick={handlePersonaClick}
+          className="pointer-events-auto cursor-pointer rounded-full focus:outline-none"
+        >
+          <Persona
+            state={isOverlayState ? "idle" : currentState}
+            variant="halo"
+            className="size-64"
+          />
+        </button>
       </div>
       {isOverlayVisible && (
         <div
