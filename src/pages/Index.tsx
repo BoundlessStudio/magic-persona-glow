@@ -172,10 +172,6 @@ import {
 } from "@/components/ai-elements/test-results";
 import {
   Circle,
-  Mic,
-  Brain,
-  Megaphone,
-  Moon,
   Upload,
   Globe,
   ArrowLeft,
@@ -211,6 +207,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useRealtimeVoice, type VoiceState } from "@/hooks/use-realtime-voice";
 
 const sampleAttachments: AttachmentData[] = [
   {
@@ -246,13 +243,14 @@ const sampleAttachments: AttachmentData[] = [
   },
 ];
 
-const personaStates: { state: PersonaState; icon: typeof Circle }[] = [
-  { state: "idle", icon: Circle },
-  { state: "listening", icon: Mic },
-  { state: "thinking", icon: Brain },
-  { state: "speaking", icon: Megaphone },
-  { state: "asleep", icon: Moon },
-];
+const voiceStateToPersona: Record<VoiceState, PersonaState> = {
+  idle: "idle",
+  connecting: "thinking",
+  listening: "listening",
+  thinking: "thinking",
+  speaking: "speaking",
+  disconnected: "asleep",
+};
 
 const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "upload", icon: Upload },
@@ -285,9 +283,17 @@ type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | 
 const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart", "chatbot"];
 
 const Index = () => {
+  const { voiceState } = useRealtimeVoice({ autoConnect: true });
   const [currentState, setCurrentState] = useState<PersonaState>("idle");
   const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
+
+  // Derive persona state from voice state, unless an overlay is active
+  useEffect(() => {
+    if (!showOverlay) {
+      setCurrentState(voiceStateToPersona[voiceState]);
+    }
+  }, [voiceState, showOverlay]);
   const exitTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const isOverlayState = overlayStates.includes(currentState as OverlayState);
@@ -910,21 +916,6 @@ if __name__ == "__main__":
         </div>
       )}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
-        <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
-          {personaStates.map(({ state, icon: Icon }) => (
-            <button
-              key={state}
-              onClick={() => setCurrentState(state)}
-              className={`rounded-full p-2.5 transition-all ${
-                currentState === state
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Icon size={20} />
-            </button>
-          ))}
-        </div>
         <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
           {componentStates.map(({ state, icon: Icon }) => (
             <button
