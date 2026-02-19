@@ -93,15 +93,8 @@ import {
   EnvironmentVariableCopyButton,
   EnvironmentVariableRequired,
 } from "@/components/ai-elements/environment-variables";
-import {
-  FileTree,
-  FileTreeFolder,
-  FileTreeFile,
-} from "@/components/ai-elements/file-tree";
-import {
-  CodeBlock,
-  CodeBlockCopyButton,
-} from "@/components/ai-elements/code-block";
+import { FileTree, FileTreeFolder, FileTreeFile } from "@/components/ai-elements/file-tree";
+import { CodeBlock, CodeBlockCopyButton } from "@/components/ai-elements/code-block";
 import {
   Sandbox,
   SandboxHeader,
@@ -305,9 +298,30 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "chatbot", icon: MessageCircle },
 ];
 
-type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table" | "kb-color-picker" | "kb-qr-code" | "kb-chart" | "chatbot";
-
-
+type OverlayState =
+  | "upload"
+  | "preview"
+  | "attachments"
+  | "chain-of-thought"
+  | "confirmation"
+  | "plan"
+  | "queue"
+  | "env-vars"
+  | "file-tree"
+  | "sandbox"
+  | "stack-trace"
+  | "terminal"
+  | "test-results"
+  | "workflow"
+  | "tweet-card"
+  | "progress-bar"
+  | "hx-calendar"
+  | "hx-video"
+  | "hx-table"
+  | "kb-color-picker"
+  | "kb-qr-code"
+  | "kb-chart"
+  | "chatbot";
 
 const Index = () => {
   const [activeOverlay, setActiveOverlay] = useState<OverlayState | null>(null);
@@ -341,9 +355,7 @@ const Index = () => {
   const isVoiceConnected = voiceState !== "disconnected";
 
   // Derive persona state directly from voice state
-  const personaState: PersonaState = activeOverlay
-    ? "idle"
-    : voiceStateToPersona[voiceState];
+  const personaState: PersonaState = activeOverlay ? "idle" : voiceStateToPersona[voiceState];
 
   const handlePersonaClick = () => {
     if (isVoiceConnected) {
@@ -384,12 +396,7 @@ const Index = () => {
           onClick={handlePersonaClick}
           className="pointer-events-auto cursor-pointer rounded-full focus:outline-none"
         >
-          <Persona
-            state={personaState}
-            variant="halo"
-            className="size-64"
-            onReady={() => setPersonaReady(true)}
-          />
+          <Persona state={personaState} variant="halo" className="size-64" onReady={() => setPersonaReady(true)} />
         </button>
       </div>
       {isOverlayVisible && (
@@ -407,17 +414,29 @@ const Index = () => {
           )}
           {showOverlay === "preview" && (
             <WebPreview
-              defaultUrl="https://example.com/"
+              defaultUrl="https://www.openstreetmap.org/export/embed.html?bbox=-0.128%2C51.507%2C-0.127%2C51.508&layer=mapnik&marker=51.507%2C-0.127"
               className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <WebPreviewNavigation>
-                <WebPreviewNavigationButton tooltip="Back"><ArrowLeft size={14} /></WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Forward"><ArrowRight size={14} /></WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Refresh"><RefreshCcw size={14} /></WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Back">
+                  <ArrowLeft size={14} />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Forward">
+                  <ArrowRight size={14} />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Refresh">
+                  <RefreshCcw size={14} />
+                </WebPreviewNavigationButton>
                 <WebPreviewUrl />
-                <WebPreviewNavigationButton tooltip="AI"><Sparkles size={14} /></WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Open in new tab"><ExternalLink size={14} /></WebPreviewNavigationButton>
-                <WebPreviewNavigationButton tooltip="Fullscreen"><Maximize2 size={14} /></WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="AI">
+                  <Sparkles size={14} />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Open in new tab">
+                  <ExternalLink size={14} />
+                </WebPreviewNavigationButton>
+                <WebPreviewNavigationButton tooltip="Fullscreen">
+                  <Maximize2 size={14} />
+                </WebPreviewNavigationButton>
               </WebPreviewNavigation>
               <WebPreviewBody />
               <WebPreviewConsole />
@@ -447,17 +466,10 @@ const Index = () => {
             </Attachments>
           )}
           {showOverlay === "chain-of-thought" && (
-            <ChainOfThought
-              defaultOpen
-              className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto"
-            >
+            <ChainOfThought defaultOpen className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto">
               <ChainOfThoughtHeader>Chain of Thought</ChainOfThoughtHeader>
               <ChainOfThoughtContent>
-                <ChainOfThoughtStep
-                  icon={Search}
-                  label="Searching for profiles for Hayden Bleasel"
-                  status="complete"
-                >
+                <ChainOfThoughtStep icon={Search} label="Searching for profiles for Hayden Bleasel" status="complete">
                   <ChainOfThoughtSearchResults>
                     <ChainOfThoughtSearchResult>www.x.com</ChainOfThoughtSearchResult>
                     <ChainOfThoughtSearchResult>www.instagram.com</ChainOfThoughtSearchResult>
@@ -469,11 +481,7 @@ const Index = () => {
                   status="complete"
                   description="Hayden Bleasel is an Australian product designer, software engineer, and founder. He is currently based in the United States working for Vercel."
                 />
-                <ChainOfThoughtStep
-                  icon={Search}
-                  label="Searching for recent work..."
-                  status="active"
-                >
+                <ChainOfThoughtStep icon={Search} label="Searching for recent work..." status="active">
                   <ChainOfThoughtSearchResults>
                     <ChainOfThoughtSearchResult>www.github.com</ChainOfThoughtSearchResult>
                     <ChainOfThoughtSearchResult>www.dribbble.com</ChainOfThoughtSearchResult>
@@ -489,7 +497,9 @@ const Index = () => {
               className="w-[480px] bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <ConfirmationRequest>
-                This tool wants to delete the file <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">/tmp/example.txt</code>. Do you approve this action?
+                This tool wants to delete the file{" "}
+                <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">/tmp/example.txt</code>. Do you
+                approve this action?
               </ConfirmationRequest>
               <ConfirmationAccepted>
                 <CheckIcon className="size-4" />
@@ -519,7 +529,8 @@ const Index = () => {
               <PlanHeader>
                 <PlanTitle>Rewrite AI Elements to SolidJS</PlanTitle>
                 <PlanDescription>
-                  Rewrite the AI Elements component library from React to SolidJS while maintaining compatibility with existing React-based shadcn/ui components.
+                  Rewrite the AI Elements component library from React to SolidJS while maintaining compatibility with
+                  existing React-based shadcn/ui components.
                 </PlanDescription>
               </PlanHeader>
               <PlanTrigger />
@@ -533,8 +544,14 @@ const Index = () => {
                 </ol>
               </PlanContent>
               <PlanFooter>
-                <PlanAction variant="outline" onClick={() => toast({ title: "Cancelled" })}>Cancel</PlanAction>
-                <PlanAction onClick={() => toast({ title: "Building…", description: "Plan execution started (demo only)." })}>Build ⌘↩</PlanAction>
+                <PlanAction variant="outline" onClick={() => toast({ title: "Cancelled" })}>
+                  Cancel
+                </PlanAction>
+                <PlanAction
+                  onClick={() => toast({ title: "Building…", description: "Plan execution started (demo only)." })}
+                >
+                  Build ⌘↩
+                </PlanAction>
               </PlanFooter>
             </Plan>
           )}
@@ -546,10 +563,22 @@ const Index = () => {
                 </QueueSectionTrigger>
                 <QueueSectionContent>
                   <QueueList>
-                    <QueueItem><QueueItemIndicator /><QueueItemContent>How do I set up the project?</QueueItemContent></QueueItem>
-                    <QueueItem><QueueItemIndicator /><QueueItemContent>What is the roadmap for Q4?</QueueItemContent></QueueItem>
-                    <QueueItem><QueueItemIndicator /><QueueItemContent>Please generate a changelog.</QueueItemContent></QueueItem>
-                    <QueueItem><QueueItemIndicator /><QueueItemContent>Add dark mode support.</QueueItemContent></QueueItem>
+                    <QueueItem>
+                      <QueueItemIndicator />
+                      <QueueItemContent>How do I set up the project?</QueueItemContent>
+                    </QueueItem>
+                    <QueueItem>
+                      <QueueItemIndicator />
+                      <QueueItemContent>What is the roadmap for Q4?</QueueItemContent>
+                    </QueueItem>
+                    <QueueItem>
+                      <QueueItemIndicator />
+                      <QueueItemContent>Please generate a changelog.</QueueItemContent>
+                    </QueueItem>
+                    <QueueItem>
+                      <QueueItemIndicator />
+                      <QueueItemContent>Add dark mode support.</QueueItemContent>
+                    </QueueItem>
                   </QueueList>
                 </QueueSectionContent>
               </QueueSection>
@@ -779,63 +808,122 @@ if __name__ == "__main__":
             </TestResults>
           )}
           {/* Workflow */}
-          {showOverlay === "workflow" && (() => {
-            const nodeIds = {
-              start: nanoid(),
-              process1: nanoid(),
-              decision: nanoid(),
-              output1: nanoid(),
-              output2: nanoid(),
-              process2: nanoid(),
-            };
-            const wfNodes = [
-              { id: nodeIds.start, position: { x: 0, y: 160 }, type: "workflow", data: { label: "Start", description: "Initialize workflow", handles: { source: true, target: false } } },
-              { id: nodeIds.process1, position: { x: 240, y: 160 }, type: "workflow", data: { label: "Process Data", description: "Transform input", handles: { source: true, target: true } } },
-              { id: nodeIds.decision, position: { x: 480, y: 160 }, type: "workflow", data: { label: "Decision Point", description: "Route based on conditions", handles: { source: true, target: true } } },
-              { id: nodeIds.output1, position: { x: 720, y: 40 }, type: "workflow", data: { label: "Success Path", description: "Handle success case", handles: { source: true, target: true } } },
-              { id: nodeIds.output2, position: { x: 720, y: 300 }, type: "workflow", data: { label: "Error Path", description: "Handle error case", handles: { source: true, target: true } } },
-              { id: nodeIds.process2, position: { x: 960, y: 160 }, type: "workflow", data: { label: "Complete", description: "Finalize workflow", handles: { source: false, target: true } } },
-            ];
-            const wfEdges = [
-              { id: nanoid(), source: nodeIds.start, target: nodeIds.process1, type: "animated" },
-              { id: nanoid(), source: nodeIds.process1, target: nodeIds.decision, type: "animated" },
-              { id: nanoid(), source: nodeIds.decision, target: nodeIds.output1, type: "animated" },
-              { id: nanoid(), source: nodeIds.decision, target: nodeIds.output2, type: "temporary" },
-              { id: nanoid(), source: nodeIds.output1, target: nodeIds.process2, type: "animated" },
-              { id: nanoid(), source: nodeIds.output2, target: nodeIds.process2, type: "temporary" },
-            ];
-            const wfNodeTypes = {
-              workflow: ({ data }: { data: { label: string; description: string; handles: { source: boolean; target: boolean } } }) => (
-                <Node>
-                  {data.handles.target && <NodeHandle position="left" />}
-                  {data.handles.source && <NodeHandle position="right" />}
-                  <NodeHeader>
-                    <NodeTitle>{data.label}</NodeTitle>
-                    <NodeDescription>{data.description}</NodeDescription>
-                  </NodeHeader>
-                  <NodeContent>
-                    <p className="text-xs text-muted-foreground">test</p>
-                  </NodeContent>
-                  <NodeFooter>
-                    <p className="text-xs">test</p>
-                  </NodeFooter>
-                </Node>
-              ),
-            };
-            const wfEdgeTypes = {
-              animated: Edge.Animated,
-              temporary: Edge.Temporary,
-            };
-            return (
-              <Canvas
-                nodes={wfNodes}
-                edges={wfEdges}
-                nodeTypes={wfNodeTypes}
-                edgeTypes={wfEdgeTypes}
-                className="w-[960px] h-[540px] bg-background/80 backdrop-blur-sm rounded-lg border border-border pointer-events-auto"
-              />
-            );
-          })()}
+          {showOverlay === "workflow" &&
+            (() => {
+              const nodeIds = {
+                start: nanoid(),
+                process1: nanoid(),
+                decision: nanoid(),
+                output1: nanoid(),
+                output2: nanoid(),
+                process2: nanoid(),
+              };
+              const wfNodes = [
+                {
+                  id: nodeIds.start,
+                  position: { x: 0, y: 160 },
+                  type: "workflow",
+                  data: {
+                    label: "Start",
+                    description: "Initialize workflow",
+                    handles: { source: true, target: false },
+                  },
+                },
+                {
+                  id: nodeIds.process1,
+                  position: { x: 240, y: 160 },
+                  type: "workflow",
+                  data: {
+                    label: "Process Data",
+                    description: "Transform input",
+                    handles: { source: true, target: true },
+                  },
+                },
+                {
+                  id: nodeIds.decision,
+                  position: { x: 480, y: 160 },
+                  type: "workflow",
+                  data: {
+                    label: "Decision Point",
+                    description: "Route based on conditions",
+                    handles: { source: true, target: true },
+                  },
+                },
+                {
+                  id: nodeIds.output1,
+                  position: { x: 720, y: 40 },
+                  type: "workflow",
+                  data: {
+                    label: "Success Path",
+                    description: "Handle success case",
+                    handles: { source: true, target: true },
+                  },
+                },
+                {
+                  id: nodeIds.output2,
+                  position: { x: 720, y: 300 },
+                  type: "workflow",
+                  data: {
+                    label: "Error Path",
+                    description: "Handle error case",
+                    handles: { source: true, target: true },
+                  },
+                },
+                {
+                  id: nodeIds.process2,
+                  position: { x: 960, y: 160 },
+                  type: "workflow",
+                  data: {
+                    label: "Complete",
+                    description: "Finalize workflow",
+                    handles: { source: false, target: true },
+                  },
+                },
+              ];
+              const wfEdges = [
+                { id: nanoid(), source: nodeIds.start, target: nodeIds.process1, type: "animated" },
+                { id: nanoid(), source: nodeIds.process1, target: nodeIds.decision, type: "animated" },
+                { id: nanoid(), source: nodeIds.decision, target: nodeIds.output1, type: "animated" },
+                { id: nanoid(), source: nodeIds.decision, target: nodeIds.output2, type: "temporary" },
+                { id: nanoid(), source: nodeIds.output1, target: nodeIds.process2, type: "animated" },
+                { id: nanoid(), source: nodeIds.output2, target: nodeIds.process2, type: "temporary" },
+              ];
+              const wfNodeTypes = {
+                workflow: ({
+                  data,
+                }: {
+                  data: { label: string; description: string; handles: { source: boolean; target: boolean } };
+                }) => (
+                  <Node>
+                    {data.handles.target && <NodeHandle position="left" />}
+                    {data.handles.source && <NodeHandle position="right" />}
+                    <NodeHeader>
+                      <NodeTitle>{data.label}</NodeTitle>
+                      <NodeDescription>{data.description}</NodeDescription>
+                    </NodeHeader>
+                    <NodeContent>
+                      <p className="text-xs text-muted-foreground">test</p>
+                    </NodeContent>
+                    <NodeFooter>
+                      <p className="text-xs">test</p>
+                    </NodeFooter>
+                  </Node>
+                ),
+              };
+              const wfEdgeTypes = {
+                animated: Edge.Animated,
+                temporary: Edge.Temporary,
+              };
+              return (
+                <Canvas
+                  nodes={wfNodes}
+                  edges={wfEdges}
+                  nodeTypes={wfNodeTypes}
+                  edgeTypes={wfEdgeTypes}
+                  className="w-[960px] h-[540px] bg-background/80 backdrop-blur-sm rounded-lg border border-border pointer-events-auto"
+                />
+              );
+            })()}
           {/* Tweet Card */}
           {showOverlay === "tweet-card" && (
             <div className="w-[480px] pointer-events-auto">
@@ -856,10 +944,7 @@ if __name__ == "__main__":
           {/* HextaUI Calendar */}
           {showOverlay === "hx-calendar" && (
             <div className="pointer-events-auto bg-background/80 backdrop-blur-sm rounded-lg border border-border p-4">
-              <Calendar
-                mode="single"
-                className="p-3 pointer-events-auto"
-              />
+              <Calendar mode="single" className="p-3 pointer-events-auto" />
             </div>
           )}
           {/* HextaUI Video Player */}
@@ -932,10 +1017,7 @@ if __name__ == "__main__":
           {/* Kibo UI QR Code */}
           {showOverlay === "kb-qr-code" && (
             <div className="pointer-events-auto flex flex-col items-center gap-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border p-6">
-              <QRCode
-                data="https://www.example.com"
-                className="size-48 rounded-lg overflow-hidden"
-              />
+              <QRCode data="https://www.example.com" className="size-48 rounded-lg overflow-hidden" />
               <p className="text-sm text-muted-foreground">www.example.com</p>
             </div>
           )}
@@ -943,11 +1025,13 @@ if __name__ == "__main__":
           {showOverlay === "kb-chart" && (
             <div className="pointer-events-auto w-[560px] bg-background/80 backdrop-blur-sm rounded-lg border border-border p-6">
               <ChartContainer
-                config={{
-                  commits: { label: "Commits", color: "hsl(var(--primary))" },
-                  prs: { label: "Pull Requests", color: "hsl(var(--accent))" },
-                  issues: { label: "Issues", color: "hsl(var(--destructive))" },
-                } satisfies ChartConfig}
+                config={
+                  {
+                    commits: { label: "Commits", color: "hsl(var(--primary))" },
+                    prs: { label: "Pull Requests", color: "hsl(var(--accent))" },
+                    issues: { label: "Issues", color: "hsl(var(--destructive))" },
+                  } satisfies ChartConfig
+                }
                 className="h-[320px] w-full"
               >
                 <BarChart
@@ -980,12 +1064,14 @@ if __name__ == "__main__":
           )}
         </div>
       )}
-      <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 transition-all duration-300 ${barVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
+      <div
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 transition-all duration-300 ${barVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}
+      >
         <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
           {componentStates.map(({ state, icon: Icon }) => (
             <button
               key={state}
-              onClick={() => setActiveOverlay((prev) => (prev === state ? null : state as OverlayState))}
+              onClick={() => setActiveOverlay((prev) => (prev === state ? null : (state as OverlayState)))}
               className={`rounded-full p-2.5 transition-all ${
                 activeOverlay === state
                   ? "bg-primary text-primary-foreground"
