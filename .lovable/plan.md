@@ -1,20 +1,50 @@
 
-## Add Syntax Highlighting to CodeBlock
 
-The current `CodeBlock` component renders code as plain monospace text with no color differentiation. The demo site uses proper syntax highlighting (keywords in blue/purple, strings in green, functions in yellow, etc.).
+## Add AI Tools to Show Component Overlays
 
-### What will change
+### Overview
+Register a tool for each component in the control bar with the OpenAI Realtime API session. When the AI decides to invoke a tool, the data channel event handler will trigger the corresponding overlay to appear.
 
-The `CodeBlock` component will be updated to use **Shiki** -- a fast, accurate syntax highlighter that supports many languages and themes. Code will render with proper color-coded tokens matching the dark theme aesthetic of the demo site.
+### Components to Register as Tools
+All 23 overlay states from `upload` through `chatbot`:
+upload, preview, attachments, chain-of-thought, confirmation, plan, queue, env-vars, file-tree, sandbox, stack-trace, terminal, test-results, workflow, tweet-card, progress-bar, hx-calendar, hx-video, hx-table, kb-color-picker, kb-qr-code, kb-chart, chatbot
 
-### Technical details
+### Technical Plan
 
-1. **Install `shiki`** -- a popular syntax highlighting library that works well in the browser
-2. **Update `code-block.tsx`** to:
-   - Use `shiki`'s `codeToHtml()` to generate highlighted HTML
-   - Load the highlighter asynchronously and cache it
-   - Fall back to plain text while the highlighter loads
-   - Use a dark theme (e.g., `github-dark` or `one-dark-pro`) to match the current dark UI
-   - Render the highlighted HTML via `dangerouslySetInnerHTML` inside the `<pre>` block
-   - Preserve the existing line numbers feature with highlighted tokens
-3. **No changes needed** to how `CodeBlock` is used in Sandbox or elsewhere -- the `code` and `language` props already exist
+#### 1. Define tool definitions array
+Create a constant mapping each overlay to an OpenAI Realtime tool definition with a descriptive name and description (no parameters needed). Example:
+
+```text
+{ type: "function", name: "show_upload", description: "Show the file upload dropzone" }
+{ type: "function", name: "show_preview", description: "Show the web preview browser" }
+{ type: "function", name: "show_chatbot", description: "Show the chatbot interface" }
+... etc for all 23 components
+```
+
+#### 2. Update `use-realtime-voice.ts`
+- Accept an `onToolCall` callback in the hook options
+- After the data channel opens, send a `session.update` event to register all tools with the session
+- Handle `response.function_call_arguments.done` events from the server -- extract the tool name and call `onToolCall(toolName)`
+- Send `conversation.item.create` (with tool result) and `response.create` back to acknowledge the tool call so the AI continues
+
+#### 3. Update `Index.tsx`
+- Pass an `onToolCall` handler to `useRealtimeVoice` that maps tool names (e.g., `"show_upload"`) to setting the corresponding overlay state via `setCurrentState`
+- This reuses the existing overlay system -- clicking a bar icon and an AI tool call both funnel through `setCurrentState`
+
+#### 4. Tool name mapping
+A simple record maps tool function names to overlay states:
+
+```text
+"show_upload"        -> "upload"
+"show_preview"       -> "preview"
+"show_attachments"   -> "attachments"
+"show_chain_of_thought" -> "chain-of-thought"
+... etc
+```
+
+### Files to Modify
+- `src/hooks/use-realtime-voice.ts` -- add tool definitions, session.update on connect, handle function_call events, accept onToolCall callback
+- `src/pages/Index.tsx` -- pass onToolCall to the hook, map tool names to overlay states
+
+### No New Dependencies Required
+
