@@ -288,6 +288,7 @@ const Index = () => {
   const [currentState, setCurrentState] = useState<PersonaState>("asleep");
   const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
+  const [personaReady, setPersonaReady] = useState(false);
 
   const isVoiceConnected = voiceState !== "disconnected";
 
@@ -330,7 +331,7 @@ const Index = () => {
     <div className="relative flex min-h-screen items-center justify-center bg-background overflow-hidden">
       <Ripple className="z-0" />
       <div
-        className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isOverlayVisible && !overlayExiting ? "opacity-30" : ""}`}
+        className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity duration-500 ${!personaReady ? "opacity-0" : isOverlayVisible && !overlayExiting ? "opacity-30" : ""}`}
       >
         {voiceState === "disconnected" && !isOverlayVisible && (
           <Mic size={48} className="absolute text-muted-foreground/30" />
@@ -343,6 +344,7 @@ const Index = () => {
             state={isOverlayState ? "idle" : currentState}
             variant="halo"
             className="size-64"
+            onReady={() => setPersonaReady(true)}
           />
         </button>
       </div>
