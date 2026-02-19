@@ -205,6 +205,7 @@ import {
   QrCode,
   BarChart3,
   MessageCircle,
+  Mic,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useRealtimeVoice, type VoiceState } from "@/hooks/use-realtime-voice";
@@ -331,6 +332,9 @@ const Index = () => {
       <div
         className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isOverlayVisible && !overlayExiting ? "opacity-30" : ""}`}
       >
+        {voiceState === "disconnected" && !isOverlayVisible && (
+          <Mic size={48} className="absolute text-muted-foreground/30" />
+        )}
         <button
           onClick={handlePersonaClick}
           className="pointer-events-auto cursor-pointer rounded-full focus:outline-none"
