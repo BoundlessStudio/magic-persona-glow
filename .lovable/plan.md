@@ -1,24 +1,41 @@
 
 
-## Add a "Close/Clear" Tool for the Voice Agent
+## Decouple Voice State from Overlay Display
 
-### Overview
-Add a new tool called `close_overlay` (or similar) that the AI can invoke to dismiss whichever overlay is currently showing, returning the UI to the default persona view.
+### Problem
+`currentState` is a single variable serving two purposes: controlling the Persona animation state AND tracking which overlay component is visible. When the voice state changes (e.g., "listening" to "thinking" to "speaking"), a `useEffect` resets `currentState` to the persona state, which can cause the currently displayed overlay to disappear due to timing/race conditions.
 
-### Changes
+### Solution
+Separate the overlay tracking into its own independent state variable, removing it from `currentState` entirely. `currentState` will only control the Persona animation, and a new `activeOverlay` state will independently control which component overlay is visible.
 
-#### 1. `src/hooks/use-realtime-voice.ts`
-- Add one more entry to the `OVERLAY_TOOLS` array:
-  ```
-  { name: "close_overlay", description: "Close/dismiss the currently displayed UI overlay" }
-  ```
-- This automatically gets included in `TOOL_DEFINITIONS` and registered with the session.
+### Changes to `src/pages/Index.tsx`
 
-#### 2. `src/pages/Index.tsx`
-- In the `handleToolCall` callback, add a check: if the tool name is `"close_overlay"`, reset `currentState` back to the base state (mapping to the current voice state) instead of looking it up in `toolNameToOverlay`.
-- This effectively dismisses whatever overlay is showing and returns to the persona view.
+1. **Replace the dual-purpose `currentState`** with two independent pieces of state:
+   - `personaState` (derived from `voiceState`) -- controls the Persona animation only
+   - `activeOverlay` (set by tool calls and bar clicks) -- controls which component overlay is visible, independent of voice state changes
+
+2. **Simplify the voice state sync**: Instead of a `useEffect` that conditionally updates `currentState`, directly derive the persona state from `voiceState` using the existing `voiceStateToPersona` map. The Persona component receives this directly.
+
+3. **Update tool call handler**: `handleToolCall` sets `activeOverlay` instead of `currentState`. The `close_overlay` tool simply sets `activeOverlay` to `null`.
+
+4. **Update bar icon click handlers**: clicking a bar icon sets `activeOverlay` instead of `currentState`.
+
+5. **Update overlay visibility logic**: the overlay enter/exit effect reads from `activeOverlay` instead of checking if `currentState` is in the overlay list.
+
+6. **Persona state when overlay is active**: when `activeOverlay` is set, pass `"idle"` to Persona (as it does now); otherwise pass the voice-derived persona state.
+
+### Resulting Data Flow
+
+```text
+voiceState changes --> personaState updates (direct derivation)
+                       (no effect on activeOverlay)
+
+tool call / bar click --> activeOverlay updates
+                          (no effect on personaState)
+
+close_overlay / bar click --> activeOverlay = null
+                              (persona resumes showing voiceState)
+```
 
 ### Files to Modify
-- `src/hooks/use-realtime-voice.ts` -- add one tool definition
-- `src/pages/Index.tsx` -- handle the `close_overlay` tool name in the callback
-
+- `src/pages/Index.tsx` -- refactor state management as described above
