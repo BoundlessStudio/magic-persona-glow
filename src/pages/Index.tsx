@@ -310,16 +310,22 @@ type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | 
 const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart", "chatbot"];
 
 const Index = () => {
-  const handleToolCall = useCallback((toolName: string) => {
+  const handleToolCallRef = useRef<(toolName: string) => void>(() => {});
+
+  const { voiceState, connect, disconnect } = useRealtimeVoice({
+    onToolCall: (toolName: string) => handleToolCallRef.current(toolName),
+  });
+
+  handleToolCallRef.current = useCallback((toolName: string) => {
+    if (toolName === "close_overlay") {
+      setCurrentState(voiceState === "disconnected" ? "asleep" : "idle");
+      return;
+    }
     const overlay = toolNameToOverlay[toolName];
     if (overlay) {
       setCurrentState(overlay);
     }
-  }, []);
-
-  const { voiceState, connect, disconnect } = useRealtimeVoice({
-    onToolCall: handleToolCall,
-  });
+  }, [voiceState]);
   const [currentState, setCurrentState] = useState<PersonaState>("asleep");
   const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
