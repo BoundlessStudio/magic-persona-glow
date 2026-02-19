@@ -311,6 +311,7 @@ type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | 
 
 const Index = () => {
   const [activeOverlay, setActiveOverlay] = useState<OverlayState | null>(null);
+  const [barVisible, setBarVisible] = useState(false);
   const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
   const [personaReady, setPersonaReady] = useState(false);
@@ -325,6 +326,10 @@ const Index = () => {
   handleToolCallRef.current = useCallback((toolName: string) => {
     if (toolName === "close_overlay") {
       setActiveOverlay(null);
+      return;
+    }
+    if (toolName === "toggle_command_bar") {
+      setBarVisible((prev) => !prev);
       return;
     }
     const overlay = toolNameToOverlay[toolName];
@@ -975,7 +980,7 @@ if __name__ == "__main__":
           )}
         </div>
       )}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+      <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 transition-all duration-300 ${barVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
         <div className="flex gap-1 rounded-full bg-secondary/80 p-1.5 backdrop-blur-sm">
           {componentStates.map(({ state, icon: Icon }) => (
             <button
