@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type VoiceState =
   | "idle"
@@ -24,20 +24,63 @@ export function useRealtimeVoice(options: UseRealtimeVoiceOptions = {}) {
   const dcRef = useRef<RTCDataChannel | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const connectingRef = useRef(false);
+  const mountedRef = useRef(true);
 
-  const disconnect = useCallback(() => {
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  function handleServerEvent(event: any) {
+    if (!mountedRef.current) return;
+    switch (event.type) {
+      case "input_audio_buffer.speech_started":
+        setVoiceState("listening");
+        break;
+      case "input_audio_buffer.speech_stopped":
+      case "input_audio_buffer.committed":
+        setVoiceState("thinking");
+        break;
+      case "response.audio.delta":
+      case "response.audio_transcript.delta":
+        setVoiceState("speaking");
+        break;
+      case "response.audio.done":
+      case "response.audio_transcript.done":
+      case "response.done":
+        setVoiceState("listening");
+        break;
+      case "error":
+        console.error("Realtime API error:", event.error);
+        break;
+      default:
+        // Log all events for debugging
+        console.log("Realtime event:", event.type);
+    }
+  }
+
+  function cleanupConnection() {
     dcRef.current?.close();
     dcRef.current = null;
     pcRef.current?.close();
     pcRef.current = null;
     if (audioRef.current) {
       audioRef.current.srcObject = null;
+      audioRef.current = null;
     }
-    setVoiceState("disconnected");
     connectingRef.current = false;
-  }, []);
+  }
 
-  const connect = useCallback(async () => {
+  function disconnect() {
+    cleanupConnection();
+    if (mountedRef.current) {
+      setVoiceState("disconnected");
+    }
+  }
+
+  async function connect() {
     if (connectingRef.current || pcRef.current) return;
     connectingRef.current = true;
     setVoiceState("connecting");
@@ -80,6 +123,13 @@ export function useRealtimeVoice(options: UseRealtimeVoiceOptions = {}) {
         audio.srcObject = e.streams[0];
       };
 
+      pc.onconnectionstatechange = () => {
+        console.log("WebRTC connection state:", pc.connectionState);
+        if (pc.connectionState === "connected" && mountedRef.current) {
+          setVoiceState("listening");
+        }
+      };
+
       // 4. Add microphone track
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       pc.addTrack(stream.getTracks()[0], stream);
@@ -98,11 +148,15 @@ export function useRealtimeVoice(options: UseRealtimeVoiceOptions = {}) {
       };
 
       dc.onopen = () => {
-        setVoiceState("listening");
-        connectingRef.current = false;
+        console.log("Data channel opened");
+        if (mountedRef.current) {
+          setVoiceState("listening");
+          connectingRef.current = false;
+        }
       };
 
       dc.onclose = () => {
+        console.log("Data channel closed");
         disconnect();
       };
 
@@ -135,41 +189,18 @@ export function useRealtimeVoice(options: UseRealtimeVoiceOptions = {}) {
       console.error("Realtime voice connection error:", err);
       disconnect();
     }
-  }, [model, voice, disconnect]);
+  }
 
-  const handleServerEvent = useCallback((event: any) => {
-    switch (event.type) {
-      case "input_audio_buffer.speech_started":
-        setVoiceState("listening");
-        break;
-      case "input_audio_buffer.speech_stopped":
-      case "input_audio_buffer.committed":
-        setVoiceState("thinking");
-        break;
-      case "response.audio.delta":
-      case "response.audio_transcript.delta":
-        setVoiceState("speaking");
-        break;
-      case "response.audio.done":
-      case "response.audio_transcript.done":
-      case "response.done":
-        setVoiceState("listening");
-        break;
-      case "error":
-        console.error("Realtime API error:", event.error);
-        break;
-    }
-  }, []);
-
-  // Auto-connect
+  // Auto-connect on mount only
   useEffect(() => {
     if (autoConnect) {
       connect();
     }
     return () => {
-      disconnect();
+      cleanupConnection();
     };
-  }, [autoConnect, connect, disconnect]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { voiceState, connect, disconnect };
 }
