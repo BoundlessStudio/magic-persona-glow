@@ -285,7 +285,7 @@ const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chai
 
 const Index = () => {
   const { voiceState, connect, disconnect } = useRealtimeVoice();
-  const [currentState, setCurrentState] = useState<PersonaState>("idle");
+  const [currentState, setCurrentState] = useState<PersonaState>("asleep");
   const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
 
