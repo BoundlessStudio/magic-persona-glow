@@ -357,7 +357,7 @@ const Index = () => {
           )}
           {showOverlay === "preview" && (
             <WebPreview
-              defaultUrl="https://www.google.com/maps"
+              defaultUrl="https://www.google.com"
               className="w-[960px] h-[640px] bg-background/80 backdrop-blur-sm pointer-events-auto"
             >
               <WebPreviewNavigation>
