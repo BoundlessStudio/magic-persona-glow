@@ -789,7 +789,7 @@ if __name__ == "__main__":
           {/* Tweet Card */}
           {showOverlay === "tweet-card" && (
             <div className="w-[480px] pointer-events-auto">
-              <ClientTweetCard id="1668408059125702661" />
+              <ClientTweetCard id="2024167043726029042" />
             </div>
           )}
           {/* Animated Circular Progress Bar */}
