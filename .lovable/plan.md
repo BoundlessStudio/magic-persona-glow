@@ -1,41 +1,25 @@
 
 
-## Decouple Voice State from Overlay Display
+## Hide Command Bar by Default and Add Voice Toggle Tool
 
-### Problem
-`currentState` is a single variable serving two purposes: controlling the Persona animation state AND tracking which overlay component is visible. When the voice state changes (e.g., "listening" to "thinking" to "speaking"), a `useEffect` resets `currentState` to the persona state, which can cause the currently displayed overlay to disappear due to timing/race conditions.
+### Overview
+The bottom command bar (pill-shaped icon row) will be hidden by default. A new tool called `toggle_command_bar` will be added so the AI voice agent can show or hide it during conversation.
 
-### Solution
-Separate the overlay tracking into its own independent state variable, removing it from `currentState` entirely. `currentState` will only control the Persona animation, and a new `activeOverlay` state will independently control which component overlay is visible.
+### Changes
 
-### Changes to `src/pages/Index.tsx`
+#### 1. `src/pages/Index.tsx`
+- Add a new state: `const [barVisible, setBarVisible] = useState(false)`
+- Wrap the bottom bar `<div>` (line 978) with a conditional or visibility class based on `barVisible`
+- Update `handleToolCall` to handle `"toggle_command_bar"` by toggling `barVisible`
+- Add a smooth transition (e.g., translate-y + opacity) so the bar slides in/out
 
-1. **Replace the dual-purpose `currentState`** with two independent pieces of state:
-   - `personaState` (derived from `voiceState`) -- controls the Persona animation only
-   - `activeOverlay` (set by tool calls and bar clicks) -- controls which component overlay is visible, independent of voice state changes
-
-2. **Simplify the voice state sync**: Instead of a `useEffect` that conditionally updates `currentState`, directly derive the persona state from `voiceState` using the existing `voiceStateToPersona` map. The Persona component receives this directly.
-
-3. **Update tool call handler**: `handleToolCall` sets `activeOverlay` instead of `currentState`. The `close_overlay` tool simply sets `activeOverlay` to `null`.
-
-4. **Update bar icon click handlers**: clicking a bar icon sets `activeOverlay` instead of `currentState`.
-
-5. **Update overlay visibility logic**: the overlay enter/exit effect reads from `activeOverlay` instead of checking if `currentState` is in the overlay list.
-
-6. **Persona state when overlay is active**: when `activeOverlay` is set, pass `"idle"` to Persona (as it does now); otherwise pass the voice-derived persona state.
-
-### Resulting Data Flow
-
-```text
-voiceState changes --> personaState updates (direct derivation)
-                       (no effect on activeOverlay)
-
-tool call / bar click --> activeOverlay updates
-                          (no effect on personaState)
-
-close_overlay / bar click --> activeOverlay = null
-                              (persona resumes showing voiceState)
-```
+#### 2. `src/hooks/use-realtime-voice.ts`
+- Add a new entry to `OVERLAY_TOOLS`:
+  ```
+  { name: "toggle_command_bar", description: "Toggle the visibility of the component command bar at the bottom of the screen" }
+  ```
+- This automatically gets included in `TOOL_DEFINITIONS` and registered with the session.
 
 ### Files to Modify
-- `src/pages/Index.tsx` -- refactor state management as described above
+- `src/hooks/use-realtime-voice.ts` -- add one tool definition
+- `src/pages/Index.tsx` -- add `barVisible` state, hide bar by default, handle the new tool in the callback
