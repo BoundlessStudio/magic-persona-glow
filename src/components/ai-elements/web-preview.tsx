@@ -36,7 +36,7 @@ interface WebPreviewProps {
 }
 
 export const WebPreview: FC<WebPreviewProps> = ({
-  defaultUrl = "https://www.example.com/",
+  defaultUrl = "https://www.openstreetmap.org/export/embed.html?bbox=-0.128%2C51.507%2C-0.127%2C51.508&layer=mapnik&marker=51.507%2C-0.127",
   className,
   children,
 }) => {
