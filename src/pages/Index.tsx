@@ -935,7 +935,7 @@ if __name__ == "__main__":
           {componentStates.map(({ state, icon: Icon }) => (
             <button
               key={state}
-              onClick={() => setCurrentState(state)}
+              onClick={() => setCurrentState((prev) => (prev === state ? "idle" : state))}
               className={`rounded-full p-2.5 transition-all ${
                 currentState === state
                   ? "bg-primary text-primary-foreground"
