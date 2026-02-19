@@ -46,6 +46,7 @@ const OVERLAY_TOOLS = [
   { name: "show_qr_code", description: "Show the QR code generator" },
   { name: "show_chart", description: "Show the chart" },
   { name: "show_chatbot", description: "Show the chatbot interface" },
+  { name: "close_overlay", description: "Close/dismiss the currently displayed UI overlay" },
 ] as const;
 
 const TOOL_DEFINITIONS = OVERLAY_TOOLS.map((t) => ({
