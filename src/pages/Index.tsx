@@ -307,9 +307,15 @@ const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
 
 type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | "confirmation" | "plan" | "queue" | "env-vars" | "file-tree" | "sandbox" | "stack-trace" | "terminal" | "test-results" | "workflow" | "tweet-card" | "progress-bar" | "hx-calendar" | "hx-video" | "hx-table" | "kb-color-picker" | "kb-qr-code" | "kb-chart" | "chatbot";
 
-const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart", "chatbot"];
+
 
 const Index = () => {
+  const [activeOverlay, setActiveOverlay] = useState<OverlayState | null>(null);
+  const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
+  const [overlayExiting, setOverlayExiting] = useState(false);
+  const [personaReady, setPersonaReady] = useState(false);
+  const exitTimer = useRef<ReturnType<typeof setTimeout>>();
+
   const handleToolCallRef = useRef<(toolName: string) => void>(() => {});
 
   const { voiceState, connect, disconnect } = useRealtimeVoice({
@@ -318,27 +324,21 @@ const Index = () => {
 
   handleToolCallRef.current = useCallback((toolName: string) => {
     if (toolName === "close_overlay") {
-      setCurrentState(voiceState === "disconnected" ? "asleep" : "idle");
+      setActiveOverlay(null);
       return;
     }
     const overlay = toolNameToOverlay[toolName];
     if (overlay) {
-      setCurrentState(overlay);
+      setActiveOverlay(overlay);
     }
-  }, [voiceState]);
-  const [currentState, setCurrentState] = useState<PersonaState>("asleep");
-  const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
-  const [overlayExiting, setOverlayExiting] = useState(false);
-  const [personaReady, setPersonaReady] = useState(false);
+  }, []);
 
   const isVoiceConnected = voiceState !== "disconnected";
 
-  // Derive persona state from voice state, unless an overlay is active
-  useEffect(() => {
-    if (!showOverlay) {
-      setCurrentState(voiceStateToPersona[voiceState]);
-    }
-  }, [voiceState, showOverlay]);
+  // Derive persona state directly from voice state
+  const personaState: PersonaState = activeOverlay
+    ? "idle"
+    : voiceStateToPersona[voiceState];
 
   const handlePersonaClick = () => {
     if (isVoiceConnected) {
@@ -347,14 +347,12 @@ const Index = () => {
       connect();
     }
   };
-  const exitTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const isOverlayState = overlayStates.includes(currentState as OverlayState);
-
+  // Overlay enter/exit animation driven by activeOverlay
   useEffect(() => {
-    if (isOverlayState) {
+    if (activeOverlay) {
       setOverlayExiting(false);
-      setShowOverlay(currentState as OverlayState);
+      setShowOverlay(activeOverlay);
     } else if (showOverlay) {
       setOverlayExiting(true);
       clearTimeout(exitTimer.current);
@@ -364,7 +362,7 @@ const Index = () => {
       }, 200);
     }
     return () => clearTimeout(exitTimer.current);
-  }, [currentState]);
+  }, [activeOverlay]);
 
   const isOverlayVisible = showOverlay !== null;
 
@@ -382,7 +380,7 @@ const Index = () => {
           className="pointer-events-auto cursor-pointer rounded-full focus:outline-none"
         >
           <Persona
-            state={isOverlayState ? "idle" : currentState}
+            state={personaState}
             variant="halo"
             className="size-64"
             onReady={() => setPersonaReady(true)}
@@ -982,9 +980,9 @@ if __name__ == "__main__":
           {componentStates.map(({ state, icon: Icon }) => (
             <button
               key={state}
-              onClick={() => setCurrentState((prev) => (prev === state ? "idle" : state))}
+              onClick={() => setActiveOverlay((prev) => (prev === state ? null : state as OverlayState))}
               className={`rounded-full p-2.5 transition-all ${
-                currentState === state
+                activeOverlay === state
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
