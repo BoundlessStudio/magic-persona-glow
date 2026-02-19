@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export type VoiceState =
   | "idle"
@@ -12,25 +12,76 @@ interface UseRealtimeVoiceOptions {
   autoConnect?: boolean;
   model?: string;
   voice?: string;
+  onToolCall?: (toolName: string) => void;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+/* ------------------------------------------------------------------ */
+/*  Tool definitions for overlay components                           */
+/* ------------------------------------------------------------------ */
+
+const OVERLAY_TOOLS = [
+  { name: "show_upload", description: "Show the file upload dropzone" },
+  { name: "show_preview", description: "Show the web preview browser" },
+  { name: "show_attachments", description: "Show the attachments list" },
+  { name: "show_chain_of_thought", description: "Show the chain of thought reasoning view" },
+  { name: "show_confirmation", description: "Show the confirmation dialog" },
+  { name: "show_plan", description: "Show the plan overview" },
+  { name: "show_queue", description: "Show the task queue" },
+  { name: "show_env_vars", description: "Show environment variables" },
+  { name: "show_file_tree", description: "Show the file tree explorer" },
+  { name: "show_sandbox", description: "Show the code sandbox" },
+  { name: "show_stack_trace", description: "Show the stack trace viewer" },
+  { name: "show_terminal", description: "Show the terminal" },
+  { name: "show_test_results", description: "Show test results" },
+  { name: "show_workflow", description: "Show the workflow canvas" },
+  { name: "show_tweet_card", description: "Show the tweet card" },
+  { name: "show_progress_bar", description: "Show the progress bar" },
+  { name: "show_calendar", description: "Show the calendar" },
+  { name: "show_video", description: "Show the video player" },
+  { name: "show_table", description: "Show the data table" },
+  { name: "show_color_picker", description: "Show the color picker" },
+  { name: "show_qr_code", description: "Show the QR code generator" },
+  { name: "show_chart", description: "Show the chart" },
+  { name: "show_chatbot", description: "Show the chatbot interface" },
+] as const;
+
+const TOOL_DEFINITIONS = OVERLAY_TOOLS.map((t) => ({
+  type: "function" as const,
+  name: t.name,
+  description: t.description,
+  parameters: { type: "object" as const, properties: {} },
+}));
+
 export function useRealtimeVoice(options: UseRealtimeVoiceOptions = {}) {
-  const { autoConnect = false, model, voice } = options;
+  const { autoConnect = false, model, voice, onToolCall } = options;
   const [voiceState, setVoiceState] = useState<VoiceState>("disconnected");
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const dcRef = useRef<RTCDataChannel | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const connectingRef = useRef(false);
   const mountedRef = useRef(true);
+  const onToolCallRef = useRef(onToolCall);
+
+  // Keep callback ref fresh
+  useEffect(() => {
+    onToolCallRef.current = onToolCall;
+  }, [onToolCall]);
 
   useEffect(() => {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
     };
+  }, []);
+
+  const sendDcMessage = useCallback((payload: Record<string, unknown>) => {
+    const dc = dcRef.current;
+    if (dc && dc.readyState === "open") {
+      dc.send(JSON.stringify(payload));
+    }
   }, []);
 
   function handleServerEvent(event: any) {
@@ -52,11 +103,27 @@ export function useRealtimeVoice(options: UseRealtimeVoiceOptions = {}) {
       case "response.done":
         setVoiceState("listening");
         break;
+      case "response.function_call_arguments.done": {
+        const toolName = event.name;
+        console.log("Tool call received:", toolName);
+        onToolCallRef.current?.(toolName);
+
+        // Acknowledge the tool call so the model continues
+        sendDcMessage({
+          type: "conversation.item.create",
+          item: {
+            type: "function_call_output",
+            call_id: event.call_id,
+            output: JSON.stringify({ success: true }),
+          },
+        });
+        sendDcMessage({ type: "response.create" });
+        break;
+      }
       case "error":
         console.error("Realtime API error:", event.error);
         break;
       default:
-        // Log all events for debugging
         console.log("Realtime event:", event.type);
     }
   }
@@ -152,6 +219,15 @@ export function useRealtimeVoice(options: UseRealtimeVoiceOptions = {}) {
         if (mountedRef.current) {
           setVoiceState("listening");
           connectingRef.current = false;
+
+          // Register tools with the session
+          sendDcMessage({
+            type: "session.update",
+            session: {
+              tools: TOOL_DEFINITIONS,
+            },
+          });
+          console.log("Registered", TOOL_DEFINITIONS.length, "tools with session");
         }
       };
 

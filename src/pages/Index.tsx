@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Ripple } from "@/components/ui/ripple";
 import { AnimatedCircularProgressBar } from "@/components/ui/animated-circular-progress-bar";
 import { ClientTweetCard } from "@/components/ui/tweet-card";
@@ -253,6 +253,32 @@ const voiceStateToPersona: Record<VoiceState, PersonaState> = {
   disconnected: "asleep",
 };
 
+const toolNameToOverlay: Record<string, OverlayState> = {
+  show_upload: "upload",
+  show_preview: "preview",
+  show_attachments: "attachments",
+  show_chain_of_thought: "chain-of-thought",
+  show_confirmation: "confirmation",
+  show_plan: "plan",
+  show_queue: "queue",
+  show_env_vars: "env-vars",
+  show_file_tree: "file-tree",
+  show_sandbox: "sandbox",
+  show_stack_trace: "stack-trace",
+  show_terminal: "terminal",
+  show_test_results: "test-results",
+  show_workflow: "workflow",
+  show_tweet_card: "tweet-card",
+  show_progress_bar: "progress-bar",
+  show_calendar: "hx-calendar",
+  show_video: "hx-video",
+  show_table: "hx-table",
+  show_color_picker: "kb-color-picker",
+  show_qr_code: "kb-qr-code",
+  show_chart: "kb-chart",
+  show_chatbot: "chatbot",
+};
+
 const componentStates: { state: PersonaState; icon: typeof Circle }[] = [
   { state: "upload", icon: Upload },
   { state: "preview", icon: Globe },
@@ -284,7 +310,16 @@ type OverlayState = "upload" | "preview" | "attachments" | "chain-of-thought" | 
 const overlayStates: OverlayState[] = ["upload", "preview", "attachments", "chain-of-thought", "confirmation", "plan", "queue", "env-vars", "file-tree", "sandbox", "stack-trace", "terminal", "test-results", "workflow", "tweet-card", "progress-bar", "hx-calendar", "hx-video", "hx-table", "kb-color-picker", "kb-qr-code", "kb-chart", "chatbot"];
 
 const Index = () => {
-  const { voiceState, connect, disconnect } = useRealtimeVoice();
+  const handleToolCall = useCallback((toolName: string) => {
+    const overlay = toolNameToOverlay[toolName];
+    if (overlay) {
+      setCurrentState(overlay);
+    }
+  }, []);
+
+  const { voiceState, connect, disconnect } = useRealtimeVoice({
+    onToolCall: handleToolCall,
+  });
   const [currentState, setCurrentState] = useState<PersonaState>("asleep");
   const [showOverlay, setShowOverlay] = useState<OverlayState | null>(null);
   const [overlayExiting, setOverlayExiting] = useState(false);
